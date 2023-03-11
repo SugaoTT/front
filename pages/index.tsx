@@ -2,8 +2,9 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
-import { Grid, GridItem, chakra} from '@chakra-ui/react'
+import { Grid, GridItem, chakra, Box, Center} from '@chakra-ui/react'
 import LeftBar from '../components/left-bar'
+import { NetworkCanvas } from "../components/network-canvas";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -39,8 +40,12 @@ export default function Home() {
       <GridItem pl='2' bg='yellow.300' area={'right-bar'}>
         Right-Bar
       </GridItem>
-      <GridItem pl='2' bg='green.300' area={'main'}>
+      <GridItem overflow='scroll' pl='2' bg='green.300' area={'main'}>
         Main
+        <Box marginLeft='8%'>
+          <NetworkCanvas></NetworkCanvas>
+        </Box>
+        
       </GridItem>
       
     </Grid>
