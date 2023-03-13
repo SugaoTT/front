@@ -14,28 +14,24 @@ export function NetworkCanvas(){
     var cy = cytoscape({
       container: container,
       style: cyStyle as unknown as cytoscape.Stylesheet[],
-      elements: data as unknown as cytoscape.ElementsDefinition
+      elements: data as unknown as cytoscape.ElementsDefinition,
+      layout: {
+        name: 'preset',
+        fit: false
+    },
+      zoom: 0.7,
+      wheelSensitivity: 0.1,
     });
-
     cy.ready(function(){
-      var n13 = cy.$('#n13');
-      var n11 = cy.$('#n11');
-      var n12 = cy.$('#n12');
-      var p11 = n11.position();
-      var p12 = n12.position();
-      var d = (p12.x - p11.x)/4;
 
-      n13.position({
-        x: (p11.x + p12.x)/2,
-        y: p11.y - d
+        console.log(cy.$('#Host').position())
+        console.log(cy.$('#Router').position())
+
       });
-
-      n11.add(n12).position({ x: p11.x, y: p11.y + d });
-    });
-    return(() => {
-      cy.destroy();
-    })
-  }, [])
+      return(() => {
+        cy.destroy();
+      })
+  })
 
   return (
     <Box ref={el} width='1000px' height='750px' border='1px'>

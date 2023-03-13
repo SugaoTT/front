@@ -1,69 +1,52 @@
 [{
     "selector": "node",
     "style": {
-      "text-valign": "center",
-      "text-halign": "left"
+      "shape": "rectangle",
+      "background-fit": "cover",
+      "height": 55,
+      "width": 120,
+      "backgroundColor": "white"
     }
-  }, {
-    "selector": "node[?flipLabel]",
-    "style": {
-      "text-halign": "right"
-    }
-  }, {
-    "selector": "node[type]",
-    "style": {
-      "label": "data(type)"
-    }
-  }, {
+  },
+  {
     "selector": "edge",
     "style": {
-      "width": 3
-    }
-  }, {
-    "selector": "edge.bezier",
-    "style": {
       "curve-style": "bezier",
-      "control-point-step-size": 40
+      "width": 2,
+      "line-color": "black"
     }
-  }, {
-    "selector": "edge.unbundled-bezier",
+  },
+  {
+    "selector": ".Host",
     "style": {
-      "curve-style": "unbundled-bezier",
-      "control-point-distances": 120,
-      "control-point-weights": 0.1
+      "height": 100,
+      "width": 100,
+      "background-opacity": 0,
+      "background-image": "https://i.imgur.com/AZYdRRK.png",
+      "label": "Host",
+      "text-margin-y": 110
     }
-  }, {
-    "selector": "edge.multi-unbundled-bezier",
+  },
+  {
+    "selector": ".Router",
     "style": {
-      "curve-style": "unbundled-bezier",
-      "control-point-distances": [40, -40],
-      "control-point-weights": [0.250, 0.75]
+      "height": 100,
+      "width": 100,
+      "background-opacity": 0,
+      "background-image": "https://i.imgur.com/h0CeoIu.png",
+      "label": "Router",
+      "text-margin-y": 110
     }
-  }, {
-    "selector": "edge.haystack",
+  },
+  {
+    "selector": ".Switch",
     "style": {
-      "curve-style": "haystack",
-      "haystack-radius": 0.5
+      "height": 100,
+      "width": 100,
+      "background-opacity": 0,
+      "background-image": "https://i.imgur.com/VoUNsTC.png",
+      "label": "Switch",
+      "text-margin-y": 110
     }
-  }, {
-    "selector": "edge.segments",
-    "style": {
-      "curve-style": "segments",
-      "segment-distances": [ 40, -40 ],
-      "segment-weights": [0.250 , 0.75]
-    }
-  }, {
-    "selector": "edge.taxi",
-    "style": {
-      "curve-style": "taxi",
-      "taxi-direction": "downward",
-      "taxi-turn": 20,
-      "taxi-turn-min-distance": 5
-    }
-  }, {
-    "selector": "edge.straight-triangle",
-    "style": {
-      "curve-style": "straight-triangle",
-      "width": 10
-    }
-  }]
+  }
+]

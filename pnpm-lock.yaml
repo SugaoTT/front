@@ -17,6 +17,9 @@ specifiers:
   react: 18.2.0
   react-dom: 18.2.0
   typescript: 4.9.5
+  xterm: ^5.1.0
+  xterm-addon-attach: ^0.8.0
+  xterm-addon-fit: ^0.7.0
 
 dependencies:
   '@chakra-ui/icons': 2.0.17_react@18.2.0
@@ -35,6 +38,9 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   typescript: 4.9.5
+  xterm: 5.1.0
+  xterm-addon-attach: 0.8.0_xterm@5.1.0
+  xterm-addon-fit: 0.7.0_xterm@5.1.0
 
 packages:
 
@@ -3788,6 +3794,26 @@ packages:
 
   /wrappy/1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
+    dev: false
+
+  /xterm-addon-attach/0.8.0_xterm@5.1.0:
+    resolution: {integrity: sha512-k8N5boSYn6rMJTTNCgFpiSTZ26qnYJf3v/nJJYexNO2sdAHDN3m1ivVQWVZ8CHJKKnZQw1rc44YP2NtgalWHfQ==}
+    peerDependencies:
+      xterm: ^5.0.0
+    dependencies:
+      xterm: 5.1.0
+    dev: false
+
+  /xterm-addon-fit/0.7.0_xterm@5.1.0:
+    resolution: {integrity: sha512-tQgHGoHqRTgeROPnvmtEJywLKoC/V9eNs4bLLz7iyJr1aW/QFzRwfd3MGiJ6odJd9xEfxcW36/xRU47JkD5NKQ==}
+    peerDependencies:
+      xterm: ^5.0.0
+    dependencies:
+      xterm: 5.1.0
+    dev: false
+
+  /xterm/5.1.0:
+    resolution: {integrity: sha512-LovENH4WDzpwynj+OTkLyZgJPeDom9Gra4DMlGAgz6pZhIDCQ+YuO7yfwanY+gVbn/mmZIStNOnVRU/ikQuAEQ==}
     dev: false
 
   /yallist/4.0.0:
