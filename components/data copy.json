@@ -1,0 +1,15 @@
+[
+  {
+    "data": {"id": "Host"}, 
+    "position": {"x": 200, "y": 200},
+    "classes": "Host"
+  },
+  {
+    "data": {"id": "Router"}, 
+    "position": {"x": 400, "y": 400},
+    "classes": "Router"
+  },
+  {
+    "data": {"source": "Host", "target": "Router"}
+  }
+]
