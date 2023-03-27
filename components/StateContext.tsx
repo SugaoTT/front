@@ -3,7 +3,7 @@ import { createContext, useState } from "react";
 const StateContext = createContext({
   connectMode: false,
   connectStatus: "",
-  changeConnectMode: () => {},
+  changeConnectMode: (connectMode: boolean) => {},
   changeConnectStatus: (connectStatus: string) => {},
 });
 
@@ -14,8 +14,8 @@ interface Props {
 const StateProvider = ({ children }: Props): JSX.Element => {
   const [connectMode, setConnectMode] = useState(false);
   const [connectStatus, setConnectStatus] = useState("");
-  const changeConnectMode = () => {
-    setConnectMode(!connectMode);
+  const changeConnectMode = (connectMode: boolean) => {
+    setConnectMode(connectMode);
   };
   const changeConnectStatus = (connectStatus: string) => {
     setConnectStatus(connectStatus);

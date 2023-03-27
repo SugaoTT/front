@@ -9,7 +9,8 @@ import { AbstractNode } from "@/script/AbstractNode";
 import nodeTest from "node:test";
 import { useState } from "react";
 import { useContext } from "react";
-import { StateContext } from "@/pages";
+//import { StateContext } from "@/pages";
+import { StateContext } from "@/components/StateContext";
 
 //type Props = {
 //  changeConnectMode: (connectMode: boolean) => void;
@@ -18,17 +19,29 @@ import { StateContext } from "@/pages";
 //  connectStatus: string;
 //};
 
+const cy = cytoscape({
+  //container: container,
+  style: cyStyle as unknown as cytoscape.Stylesheet[],
+
+  elements: data as unknown as cytoscape.ElementsDefinition,
+  layout: {
+    name: "preset",
+    fit: false,
+  },
+  zoom: 0.7,
+  wheelSensitivity: 0.1,
+});
+
 export function NetworkCanvas() {
-  const { changeConnectMode } = useContext(StateContext);
-  const { connectMode } = useContext(StateContext);
-  const { changeConnectStatus } = useContext(StateContext);
-  const { connectStatus } = useContext(StateContext);
+  const { changeConnectMode, connectMode, changeConnectStatus, connectStatus } =
+    useContext(StateContext);
 
   const el = useRef(null);
 
   //const [cyState, setCy] = useState(false);
 
-  let cy: any;
+  //let cy: cytoscape.Core;
+  console.log("cy", cy);
 
   let srcNode: string = "";
   let dstNode: string = "";
@@ -130,18 +143,7 @@ export function NetworkCanvas() {
 
   useEffect(() => {
     const container = el.current! as HTMLDivElement;
-    cy = cytoscape({
-      container: container,
-      style: cyStyle as unknown as cytoscape.Stylesheet[],
-
-      elements: data as unknown as cytoscape.ElementsDefinition,
-      layout: {
-        name: "preset",
-        fit: false,
-      },
-      zoom: 0.7,
-      wheelSensitivity: 0.1,
-    });
+    cy.mount(container);
     // cy.ready(function(){
 
     //     console.log(cy.$('#Host').position())

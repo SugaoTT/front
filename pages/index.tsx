@@ -23,7 +23,7 @@ import { AbstractNode } from "@/script/AbstractNode";
 import ToolBar from "@/components/tool-bar";
 import Header from "@/components/header";
 import { createContext, useContext } from "react";
-//import { StateContext, StateProvider } from "@/components/StateContext";
+import { StateContext, StateProvider } from "@/components/StateContext";
 
 import { CountLabel } from "../components/CountLabel";
 import { PlusButton } from "../components/PlusButton";
@@ -100,12 +100,7 @@ export default function Home() {
           <Header></Header>
         </GridItem>
         <GridItem pl="2" bg="gray.100" border="1px" area={"tool-bar"}>
-          <ToolBar
-            changeConnectMode={changeConnectMode}
-            isConnectMode={isConnectMode}
-            changeConnectStatus={changeConnectStatus}
-            connectStatus={connectStatus}
-          ></ToolBar>
+          <ToolBar></ToolBar>
         </GridItem>
         <GridItem pl="2" bg="gray.100" border="1px" area={"left-bar"}>
           <Box marginTop="5%">
@@ -126,6 +121,8 @@ export default function Home() {
     </StateProvider>
   );
 }
+
+/*
 
 const StateContext = createContext({
   connectMode: false,
@@ -162,3 +159,4 @@ const StateProvider = ({ children }: Props): JSX.Element => {
 };
 
 export { StateContext, StateProvider };
+*/

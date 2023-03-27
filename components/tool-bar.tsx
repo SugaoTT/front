@@ -1,4 +1,5 @@
-import { StateContext } from "@/pages";
+//import { StateContext } from "@/pages";
+import { StateContext } from "@/components/StateContext";
 import {
   Button,
   VStack,
@@ -25,7 +26,7 @@ import {
   RocketLaunch,
 } from "../components/icons";
 
-export default function ToolBar(props: any) {
+export default function ToolBar() {
   const { changeConnectMode } = useContext(StateContext);
   const { connectMode } = useContext(StateContext);
   const { changeConnectStatus } = useContext(StateContext);
@@ -62,7 +63,6 @@ export default function ToolBar(props: any) {
   const cable = () => {
     console.log("clicked cable button!");
     changeConnectMode(true);
-    console.log("cable", connectMode);
     changeConnectStatus("srcNodeを選択");
     //props.changeConnectStatus("srcNodeを選択");
     //changeGuideMessage("");
