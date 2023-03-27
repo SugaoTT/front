@@ -24,6 +24,11 @@ export class GUIManager {
   private _list_hosts: Array<AbstractNode>;
 
   /**
+   * 生成したケーブル数を示す値
+   */
+  private _cables: number;
+
+  /**
    * 通信用ソケット
    */
   private _socket: AbstractSocket;
@@ -43,6 +48,7 @@ export class GUIManager {
     this._list_routers = new Array();
     this._list_switches = new Array();
     this._list_hosts = new Array();
+    this._cables = 0;
   }
 
   /** ノード管理用リストを返す */
@@ -63,6 +69,10 @@ export class GUIManager {
   /** ノード管理用リストを返す */
   public get list_hosts() {
     return this._list_hosts;
+  }
+
+  public updateCables() {
+    return this._cables++;
   }
 
   public get socket() {

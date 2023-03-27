@@ -33,7 +33,7 @@ export default function LeftBar() {
         <InputGroup marginBottom="30px">
           <InputLeftElement
             pointerEvents="none"
-            children={<SearchIcon color="gray.300" />}
+            children={<SearchIcon color="gray.900" />}
           />
           <Input type="tel" placeholder="機器検索" />
         </InputGroup>

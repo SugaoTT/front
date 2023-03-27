@@ -23,7 +23,7 @@
       "width": 100,
       "background-opacity": 0,
       "background-image": "https://i.imgur.com/AZYdRRK.png",
-      "label": "Host",
+      "label": "data(id)",
       "text-margin-y": 110
     }
   },
@@ -34,7 +34,7 @@
       "width": 100,
       "background-opacity": 0,
       "background-image": "https://i.imgur.com/h0CeoIu.png",
-      "label": "Router",
+      "label": "data(id)",
       "text-margin-y": 110
     }
   },
@@ -45,7 +45,7 @@
       "width": 100,
       "background-opacity": 0,
       "background-image": "https://i.imgur.com/VoUNsTC.png",
-      "label": "Switch",
+      "label": "data(id)",
       "text-margin-y": 110
     }
   }

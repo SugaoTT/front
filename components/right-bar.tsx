@@ -13,6 +13,8 @@ import { SearchIcon, CheckIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import TerminalWindow from "../components/terminal-window";
 import dynamic from "next/dynamic";
+import IPSetting from "./ip-setting";
+import Memo from "./memo";
 
 const TerminalComponent = dynamic(
   () => import("../components/terminal-window"),
@@ -27,6 +29,7 @@ export default function RightBar() {
   const [isConsoleVisiable, setConsoleVisiable] = useState(false);
   const [isIPSettingVisiable, setIPSettingVisiable] = useState(false);
   const [isMemoVisiable, setMemoVisiable] = useState(false);
+  const [nodeName, setNodeName] = useState("");
 
   const changeConsoleVisiable = () => {
     setConsoleVisiable(!isConsoleVisiable);
@@ -38,6 +41,10 @@ export default function RightBar() {
 
   const changeMemoVisiable = () => {
     setMemoVisiable(!isMemoVisiable);
+  };
+
+  const changeNodeName = (nodeName: string) => {
+    setNodeName(nodeName);
   };
 
   return (
@@ -67,6 +74,7 @@ export default function RightBar() {
             {!isIPSettingVisiable && <Box> + IPネットワーク設定</Box>}
           </Button>
         </Box>
+        <Box w="100%">{isIPSettingVisiable && <IPSetting></IPSetting>}</Box>
 
         <Box w="100%">
           <Button
@@ -78,6 +86,7 @@ export default function RightBar() {
             {!isMemoVisiable && <Box> + メモ</Box>}
           </Button>
         </Box>
+        <Box w="100%">{isMemoVisiable && <Memo></Memo>}</Box>
       </VStack>
     </>
   );

@@ -15,51 +15,50 @@ import {
 import LeftBar from "../components/left-bar";
 import { NetworkCanvas } from "../components/network-canvas";
 import RightBar from "@/components/right-bar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import WebSocketCreater from "@/components/websocket";
 import { AbstractSocket } from "../script/AbstractSocket";
 import { GUIManager } from "../script/GUIManager";
 import { AbstractNode } from "@/script/AbstractNode";
 import ToolBar from "@/components/tool-bar";
 import Header from "@/components/header";
+import { createContext, useContext } from "react";
+//import { StateContext, StateProvider } from "@/components/StateContext";
+
+import { CountLabel } from "../components/CountLabel";
+import { PlusButton } from "../components/PlusButton";
+import { MinusButton } from "../components/MinusButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
-function Parent() {
-  const [show, setShow] = useState<boolean>(false);
+//const ThemeContext = createContext(null);
 
-  console.log("Parent");
-
-  return (
-    <div>
-      <button onClick={() => setShow((prev) => !prev)}>toggle</button>
-      <br />
-      {show && <Child />}
-    </div>
-  );
-}
-
-function Child() {
-  console.log("Child");
-
-  const [state, setState] = useState<number>(0);
-
-  useEffect(() => {
-    console.log("Child mounted!");
-    return () => {
-      console.log("Child unmounted!");
-    };
-  }, []);
-
-  return (
-    <div>
-      <button onClick={() => setState(Math.random())}>再レンダリング</button>
-      {state}
-      <br />
-    </div>
-  );
-}
 export default function Home() {
+  //const theme = useContext(ThemeContext);
+
+  const [isConnectMode, setConnectMode] = useState<boolean>(false);
+  //const isConnectMode = useRef<boolean>(false);
+
+  const changeConnectMode = (connectMode: boolean) => {
+    //isConnectMode.current = !isConnectMode.current;
+    setConnectMode(connectMode);
+  };
+
+  //const connectStatus = useRef<string>("デフォルト");
+  const [connectStatus, setConnectStatus] = useState("デフォルト");
+
+  const changeConnectStatus = (status: string) => {
+    //connectStatus.current = status;
+    setConnectStatus(status);
+  };
+
+  //let isConnectMode: boolean = false;
+
+  //const changeConnectMode = () => {
+  //  isConnectMode = true;
+  //  console.log("呼ばれてます");
+  //};
+
   const addSocket = () => {
     //new AbstractSocket();
     //new AbstractNode("A");
@@ -69,8 +68,12 @@ export default function Home() {
     GUIManager.guimanager.socket.sendData("TANAKA");
   };
 
+  //const setNodeNameOnRightBar = (nodeName: string) =>{
+  //
+  //}
+
   return (
-    <>
+    <StateProvider>
       <Head>
         <title>TEST</title>
       </Head>
@@ -97,7 +100,12 @@ export default function Home() {
           <Header></Header>
         </GridItem>
         <GridItem pl="2" bg="gray.100" border="1px" area={"tool-bar"}>
-          <ToolBar></ToolBar>
+          <ToolBar
+            changeConnectMode={changeConnectMode}
+            isConnectMode={isConnectMode}
+            changeConnectStatus={changeConnectStatus}
+            connectStatus={connectStatus}
+          ></ToolBar>
         </GridItem>
         <GridItem pl="2" bg="gray.100" border="1px" area={"left-bar"}>
           <Box marginTop="5%">
@@ -115,6 +123,42 @@ export default function Home() {
           </Box>
         </GridItem>
       </Grid>
-    </>
+    </StateProvider>
   );
 }
+
+const StateContext = createContext({
+  connectMode: false,
+  connectStatus: "",
+  changeConnectMode: (connectMode: boolean) => {},
+  changeConnectStatus: (connectStatus: string) => {},
+});
+
+interface Props {
+  children: JSX.Element | JSX.Element[];
+}
+
+const StateProvider = ({ children }: Props): JSX.Element => {
+  const [connectMode, setConnectMode] = useState(false);
+  const [connectStatus, setConnectStatus] = useState("");
+  const changeConnectMode = (connectMode: boolean) => {
+    setConnectMode(connectMode);
+  };
+  const changeConnectStatus = (connectStatus: string) => {
+    setConnectStatus(connectStatus);
+  };
+  return (
+    <StateContext.Provider
+      value={{
+        connectMode,
+        connectStatus,
+        changeConnectMode,
+        changeConnectStatus,
+      }}
+    >
+      {children}
+    </StateContext.Provider>
+  );
+};
+
+export { StateContext, StateProvider };
