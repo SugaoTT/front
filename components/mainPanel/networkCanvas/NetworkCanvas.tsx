@@ -1,7 +1,7 @@
 import cytoscape, { ElementDefinition, ElementsDefinition } from "cytoscape";
 import { Anybody } from "next/font/google";
 import { useEffect, useRef } from "react";
-import cyStyle from "./cy-style.json";
+import cyStyle from "./cyStyle.json";
 import data from "./data.json";
 import { Box } from "@chakra-ui/react";
 import { GUIManager } from "@/script/GUIManager";
@@ -10,7 +10,7 @@ import nodeTest from "node:test";
 import { useState } from "react";
 import { useContext } from "react";
 //import { StateContext } from "@/pages";
-import { StateContext } from "@/components/StateContext";
+import { StateContext } from "@/components/context/StateContext";
 
 //type Props = {
 //  changeConnectMode: (connectMode: boolean) => void;
@@ -30,24 +30,17 @@ const cy = cytoscape({
   },
   zoom: 0.7,
   wheelSensitivity: 0.1,
+  minZoom: 0.5,
 });
 
-export function NetworkCanvas() {
+let srcNode: string = "";
+let dstNode: string = "";
+
+export const NetworkCanvas = () => {
   const { changeConnectMode, connectMode, changeConnectStatus, connectStatus } =
     useContext(StateContext);
 
-  const el = useRef(null);
-
-  //const [cyState, setCy] = useState(false);
-
-  //let cy: cytoscape.Core;
-  console.log("cy", cy);
-
-  let srcNode: string = "";
-  let dstNode: string = "";
-
-  let tmpConnectMode = false;
-  let tmpConnectStatus = "";
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     console.log("on drop", e);
@@ -86,30 +79,30 @@ export function NetworkCanvas() {
     console.log("on drag enter", e);
   };
 
-  //console.log("props.isConnectMode on render:", props.isConnectMode);
-  //console.log("tmpConnectMode on render:", tmpConnectMode);
-
   const clickedNode = (nodeName: string) => {
     console.log("clickedNode connectMode", connectMode);
-    //console.log("clickNode tmpConnectMode", tmpConnectMode);
+    console.log("clickedNode connectStatus", connectStatus);
+
     if (connectMode) {
       console.log("clickedNode", connectMode);
-      if (tmpConnectStatus == "srcNodeを選択") {
+      if (connectStatus == "srcNodeを選択") {
         srcNode = nodeName;
+        console.log("clickedNode srcNode", srcNode);
+        //a.current = nodeName;
         //props.changeConnectStatus("dstNodeを選択");
-        tmpConnectStatus = "dstNodeを選択";
-      } else if (tmpConnectStatus == "dstNodeを選択") {
+        changeConnectStatus("dstNodeを選択");
+        //tmpConnectStatus = "dstNodeを選択";
+      } else if (connectStatus == "dstNodeを選択") {
         dstNode = nodeName;
         //props.changeConnectStatus("接続完了");
-        tmpConnectStatus = "接続完了";
-      }
-      if (tmpConnectStatus == "接続完了") {
+        changeConnectStatus("接続完了");
+        //tmpConnectStatus = "接続完了";
         console.log("接続元ノード: " + srcNode + " 接続先ノード: " + dstNode);
         connect();
-        //props.changeConnectMode(false);
-        //props.changeConnectStatus("デフォルト");
         srcNode = "";
         dstNode = "";
+        changeConnectMode(false);
+        changeConnectStatus("");
       }
     }
 
@@ -117,6 +110,7 @@ export function NetworkCanvas() {
   };
 
   const connect = () => {
+    console.log("結線処理をします。");
     let cableNumber = GUIManager.guimanager.updateCables();
     cy.add({
       data: {
@@ -142,28 +136,39 @@ export function NetworkCanvas() {
   //}, [props.connectStatus]);
 
   useEffect(() => {
-    const container = el.current! as HTMLDivElement;
-    cy.mount(container);
-    // cy.ready(function(){
+    if (containerRef.current) {
+      cy.mount(containerRef.current);
+    }
 
-    //     console.log(cy.$('#Host').position())
-    //     console.log(cy.$('#Router').position())
+    //  console.log(props.isConnectMode);
+    return () => {
+      cy.unmount();
+    };
+  }, [changeConnectMode, changeConnectStatus]);
 
-    //   });
-    //   return(() => {
-    //     cy.destroy();
-    //   })
+  useEffect(() => {
     cy.on("tap", "node", function (event: any) {
-      console.log(connectMode);
+      // changeConnectMode(true); //適用される
+      // changeConnectStatus("TANAKA"); //適用される
+      console.log(connectMode); //値が反映されない
+
       console.log(event.target._private.data.id);
       clickedNode(event.target._private.data.id);
     });
-    //  console.log(props.isConnectMode);
-  }, []);
+    return () => {
+      cy.removeListener("tap");
+    };
+  }, [connectMode, connectStatus]);
+
+  //);
+
+  //const output = () => {
+  //  console.log("DisplayState: コネクトモードを表示", connectMode);
+  //};
 
   return (
     <Box
-      ref={el}
+      ref={containerRef}
       onDragEnter={onDragEnter}
       onDragOver={(e) => {
         e.preventDefault();
@@ -210,4 +215,4 @@ export function NetworkCanvas() {
         <div ref={container}>
         </div>
     )*/
-}
+};

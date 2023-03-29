@@ -22,7 +22,7 @@ export default function IPSetting() {
     <>
       <VStack spacing="24px">
         <Menu placement="left">
-          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+          <MenuButton border="1px" as={Button} rightIcon={<ChevronDownIcon />}>
             インタフェース名を選択
           </MenuButton>
           <MenuList>
@@ -35,10 +35,10 @@ export default function IPSetting() {
         </Menu>
 
         <Text fontSize="xl">IP Address: </Text>
-        <Textarea placeholder="IPアドレスを入力" />
+        <Textarea border="1px" placeholder="IPアドレスを入力" />
 
         <Text fontSize="xl">Default Gateway: </Text>
-        <Textarea placeholder="デフォルトゲートウェイを入力" />
+        <Textarea border="1px" placeholder="デフォルトゲートウェイを入力" />
       </VStack>
     </>
   );

@@ -12,22 +12,23 @@ import {
   Hide,
   Container,
 } from "@chakra-ui/react";
-import LeftBar from "../components/left-bar";
-import { NetworkCanvas } from "../components/network-canvas";
-import RightBar from "@/components/right-bar";
+import LeftBar from "../components/leftBar/LeftBar";
+import { NetworkCanvas } from "../components/mainPanel/networkCanvas/NetworkCanvas";
+import RightBar from "@/components/rightBar/RightBar";
 import { useEffect, useRef, useState } from "react";
-import WebSocketCreater from "@/components/websocket";
+import WebSocketCreater from "@/components/_testCode/websocket";
 import { AbstractSocket } from "../script/AbstractSocket";
 import { GUIManager } from "../script/GUIManager";
 import { AbstractNode } from "@/script/AbstractNode";
-import ToolBar from "@/components/tool-bar";
-import Header from "@/components/header";
+import ToolBar from "@/components/toolBar/ToolBar";
+import Header from "@/components/Header/Header";
 import { createContext, useContext } from "react";
-import { StateContext, StateProvider } from "@/components/StateContext";
+import { StateContext, StateProvider } from "@/components/context/StateContext";
 
-import { CountLabel } from "../components/CountLabel";
-import { PlusButton } from "../components/PlusButton";
-import { MinusButton } from "../components/MinusButton";
+import { CountLabel } from "../components/_testCode/CountLabel";
+import { PlusButton } from "../components/_testCode/PlusButton";
+import { MinusButton } from "../components/_testCode/MinusButton";
+import { DisplayState } from "@/components/mainPanel/networkCanvas/DisplayState";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -114,6 +115,7 @@ export default function Home() {
         </GridItem>
         <GridItem overflow="scroll" pl="2" area={"main"}>
           <Box marginLeft="12%" marginTop="2%">
+            <DisplayState></DisplayState>
             <NetworkCanvas></NetworkCanvas>
           </Box>
         </GridItem>

@@ -1,5 +1,5 @@
 //import { StateContext } from "@/pages";
-import { StateContext } from "@/components/StateContext";
+import { StateContext } from "@/components/context/StateContext";
 import {
   Button,
   VStack,
@@ -24,13 +24,11 @@ import {
   ZoomOut,
   Cable,
   RocketLaunch,
-} from "../components/icons";
+} from "./Icons";
 
 export default function ToolBar() {
-  const { changeConnectMode } = useContext(StateContext);
-  const { connectMode } = useContext(StateContext);
-  const { changeConnectStatus } = useContext(StateContext);
-  const { connectStatus } = useContext(StateContext);
+  const { changeConnectMode, connectMode, changeConnectStatus, connectStatus } =
+    useContext(StateContext);
 
   const open_in_new = () => {
     console.log("clicked open_in_new button!");
@@ -62,24 +60,15 @@ export default function ToolBar() {
 
   const cable = () => {
     console.log("clicked cable button!");
+    //接続モードをtrueにする
     changeConnectMode(true);
+    //接続ステータスをsrcNode待ち受けにする
     changeConnectStatus("srcNodeを選択");
-    //props.changeConnectStatus("srcNodeを選択");
-    //changeGuideMessage("");
   };
 
   const rocket_launch = () => {
     console.log("clicked rocket_launch button!");
   };
-
-  //const guideMessage = useRef<string>("");
-  //const [guideMessage, setGuideMessage] = useState("");
-
-  //const changeGuideMessage = (guideMessage: string) => {
-  //  setGuideMessage(props.changeConnectStatus.current);
-  //};
-
-  //let [connectStatus, setStatus] = useState("");
 
   return (
     <HStack spacing="15px">
@@ -151,6 +140,8 @@ export default function ToolBar() {
         icon={<Cable w="35px" h="35px" />}
       />
 
+      {connectMode && <Text fontSize="lg">{connectStatus}</Text>}
+
       <IconButton
         onClick={rocket_launch}
         w="35px"
@@ -158,7 +149,6 @@ export default function ToolBar() {
         aria-label="rocket launch"
         icon={<RocketLaunch w="35px" h="35px" />}
       />
-      {connectMode && <Text fontSize="lg">{connectStatus}</Text>}
 
       {/*<Text fontSize="lg">{guideMessage}</Text>*/}
     </HStack>

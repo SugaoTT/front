@@ -22,7 +22,7 @@ export default function Memo() {
     <>
       <VStack spacing="24px">
         <Text fontSize="xl">メモ: </Text>
-        <Textarea />
+        <Textarea border="1px" bg="whiteAlpha.100" />
       </VStack>
     </>
   );

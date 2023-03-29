@@ -11,17 +11,14 @@ import {
 } from "@chakra-ui/react";
 import { SearchIcon, CheckIcon } from "@chakra-ui/icons";
 import { useState } from "react";
-import TerminalWindow from "../components/terminal-window";
+import TerminalWindow from "./TerminalWindow";
 import dynamic from "next/dynamic";
-import IPSetting from "./ip-setting";
-import Memo from "./memo";
+import IPSetting from "./IPSetting";
+import Memo from "./Memo";
 
-const TerminalComponent = dynamic(
-  () => import("../components/terminal-window"),
-  {
-    ssr: false,
-  }
-);
+const TerminalComponent = dynamic(() => import("./TerminalWindow"), {
+  ssr: false,
+});
 
 export default function RightBar() {
   //let isConsoleVisiable: boolean=true

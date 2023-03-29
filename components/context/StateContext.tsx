@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 const StateContext = createContext({
   connectMode: false,
@@ -14,12 +14,14 @@ interface Props {
 const StateProvider = ({ children }: Props): JSX.Element => {
   const [connectMode, setConnectMode] = useState(false);
   const [connectStatus, setConnectStatus] = useState("");
-  const changeConnectMode = (connectMode: boolean) => {
+
+  const changeConnectMode = useCallback((connectMode: boolean) => {
     setConnectMode(connectMode);
-  };
-  const changeConnectStatus = (connectStatus: string) => {
+  }, []);
+  const changeConnectStatus = useCallback((connectStatus: string) => {
     setConnectStatus(connectStatus);
-  };
+  }, []);
+
   return (
     <StateContext.Provider
       value={{
