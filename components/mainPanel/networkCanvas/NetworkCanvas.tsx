@@ -21,9 +21,8 @@ import { StateContext } from "@/components/context/StateContext";
 
 const cy = cytoscape({
   //container: container,
-  style: cyStyle as unknown as cytoscape.Stylesheet[],
-
-  elements: data as unknown as cytoscape.ElementsDefinition,
+  style: cyStyle,
+  elements: data,
   layout: {
     name: "preset",
     fit: false,
@@ -37,8 +36,13 @@ let srcNode: string = "";
 let dstNode: string = "";
 
 export const NetworkCanvas = () => {
-  const { changeConnectMode, connectMode, changeConnectStatus, connectStatus } =
-    useContext(StateContext);
+  const {
+    changeConnectMode,
+    connectMode,
+    changeConnectStatus,
+    connectStatus,
+    changeOperatingNode,
+  } = useContext(StateContext);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -98,23 +102,39 @@ export const NetworkCanvas = () => {
         changeConnectStatus("接続完了");
         //tmpConnectStatus = "接続完了";
         console.log("接続元ノード: " + srcNode + " 接続先ノード: " + dstNode);
-        connect();
+
+        //ケーブル名を作成
+        let cableName =
+          srcNode + "-" + dstNode + GUIManager.guimanager.updateCables();
+
+        //Nodeインスタンスに結線情報を登録
+        let srcUUID = GUIManager.guimanager.getUUIDByNodeName(srcNode);
+        let dstUUID = GUIManager.guimanager.getUUIDByNodeName(dstNode);
+
+        GUIManager.guimanager.selectedByUUID(srcUUID).addInterface(cableName);
+        GUIManager.guimanager.selectedByUUID(dstUUID).addInterface(cableName);
+
+        connect(cableName);
+
+        console.log(GUIManager.guimanager.selectedByUUID(srcUUID));
+
         srcNode = "";
         dstNode = "";
         changeConnectMode(false);
         changeConnectStatus("");
       }
+    } else {
+      changeOperatingNode(nodeName);
     }
 
     //props.changeConnectMode();
   };
 
-  const connect = () => {
+  const connect = (cableName: string) => {
     console.log("結線処理をします。");
-    let cableNumber = GUIManager.guimanager.updateCables();
     cy.add({
       data: {
-        id: srcNode + "To" + dstNode + cableNumber,
+        id: cableName,
         source: srcNode,
         target: dstNode,
       },

@@ -1,5 +1,7 @@
+import { Terminal } from "xterm";
 import { AbstractNode } from "./AbstractNode";
 import { AbstractSocket } from "./AbstractSocket";
+import { Console } from "../components/rightBar/Console";
 
 export class GUIManager {
   /** 自身を格納する変数*/
@@ -32,6 +34,9 @@ export class GUIManager {
    * 通信用ソケット
    */
   private _socket: AbstractSocket;
+
+  /** ターミナル */
+  private _currentConsole: Console;
 
   /** シングルトンパターンの実装 */
   public static get guimanager(): GUIManager {
@@ -108,7 +113,26 @@ export class GUIManager {
     return null;
   }
 
+  public getUUIDByNodeName(nodeName: string): string | null {
+    let node: AbstractNode;
+    for (let i: number = 0; i < this._list_nodes.length; i++) {
+      node = this._list_nodes[i];
+      if (nodeName == node.nodeName) {
+        return node.UUID;
+      }
+    }
+    return null;
+  }
+
   public addSocket(socket: AbstractSocket) {
     this._socket = socket;
+  }
+
+  public set currentConsole(console: Console) {
+    this._currentConsole = console;
+  }
+
+  public get currentConsole() {
+    return this._currentConsole;
   }
 }

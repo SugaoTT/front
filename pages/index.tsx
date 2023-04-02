@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import { Inter } from "next/font/google";
+import { Inter, Xanh_Mono } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import {
   Grid,
@@ -11,6 +11,7 @@ import {
   Show,
   Hide,
   Container,
+  usePrefersReducedMotion,
 } from "@chakra-ui/react";
 import LeftBar from "../components/leftBar/LeftBar";
 import { NetworkCanvas } from "../components/mainPanel/networkCanvas/NetworkCanvas";
@@ -35,6 +36,38 @@ const inter = Inter({ subsets: ["latin"] });
 //const ThemeContext = createContext(null);
 
 export default function Home() {
+  /**
+   * ソケットに関する部分の実装を全部コンテキストにしよう
+   */
+  const socketRef = useRef<WebSocket>();
+  const [isConnected, setIsConnected] = useState(false);
+  const [formMessage, setFormMessage] = useState("");
+  const [sentMessage, setSentMessage] = useState("");
+
+  const { msg, changeMsg, operatingNode } = useContext(StateContext);
+
+  /*
+  const {
+    socket,
+    isConnected,
+    formMessage,
+    sentMessage,
+    changeIsConnected,
+    changeFormMessage,
+    changeSentMessage,
+  } = useContext(StateContext);*/
+
+  //socketRef.current = new WebSocket("ws://localhost:8080/socket");
+
+  //console.log(socketRef.current);
+
+  const sendData = (event: any) => {
+    event.preventDefault();
+    console.log(event.target[0].value);
+    setFormMessage(event.target[0].value);
+    GUIManager.guimanager.socket?.send(event.target[0].value);
+  };
+
   //const theme = useContext(ThemeContext);
 
   const [isConnectMode, setConnectMode] = useState<boolean>(false);
@@ -69,9 +102,84 @@ export default function Home() {
     GUIManager.guimanager.socket.sendData("TANAKA");
   };
 
+  const testSocket = () => {
+    console.log(isConnected);
+  };
+
+  useEffect(() => {
+    // console.log(socket);
+
+    GUIManager.guimanager.addSocket(
+      new WebSocket("ws://localhost:8080/socket")
+    );
+    //console.log(GUIManager.guimanager.socket);
+
+    let socket: WebSocket = GUIManager.guimanager.socket;
+    socket.onopen = function () {
+      setIsConnected(true);
+      console.log("Connected");
+    };
+    socket.onclose = function () {
+      console.log("closed");
+      setIsConnected(false);
+    };
+    socket.onmessage = function (event) {
+      setSentMessage(event.data);
+
+      //let terminal = GUIManager.guimanager.terminal;
+      let currentConsole = GUIManager.guimanager.currentConsole;
+      if (currentConsole != undefined) {
+        //GUIManager.guimanager.terminal.writeln(event.data);
+        //GUIManager.guimanager.terminal.write(operatingNode + ">");
+        currentConsole.writeln(event.data);
+        currentConsole.writePrompt();
+      }
+
+      //changeMsg(event.data);
+      //console.log(event.data);
+      //console.log(msg);
+    };
+
+    socketRef.current = socket;
+    console.log(socketRef.current);
+  }, []);
+
   //const setNodeNameOnRightBar = (nodeName: string) =>{
   //
   //}
+  /*
+  useEffect(() => {
+    //addSocket();
+    //sendMsg();
+
+    socketRef.current = new WebSocket("ws://localhost:8080/socket");
+    socketRef.current.onopen = function () {
+      setIsConnected(true);
+      console.log("Connected");
+    };
+
+    socketRef.current.onclose = function () {
+      console.log("closed");
+      setIsConnected(false);
+    };
+
+    // server 側から送られてきたデータを受け取る
+    socketRef.current.onmessage = function (event) {
+      setSentMessage(event.data);
+    };
+
+    return () => {
+      if (socketRef.current == null) {
+        return;
+      }
+      socketRef.current.close();
+    };
+  }, []);
+
+  */
+  const testMsg = () => {
+    console.log(msg);
+  };
 
   return (
     <StateProvider>
@@ -83,8 +191,19 @@ export default function Home() {
       <Parent />
   */}
 
-      {/*<button onClick={addSocket}>BUTTON</button>
-      <button onClick={sendMsg}>SEND</button>*/}
+      <button onClick={testMsg}>MSG</button>
+
+      <button onClick={testSocket}>confirm socket</button>
+      {/*<button onClick={sendMsg}>SEND</button>
+      <h3>sent message: {sentMessage}</h3>*/}
+
+      <h1>WebSocket is connected : {String(isConnected)}</h1>
+      <form onSubmit={sendData}>
+        <input type="text" name="socketData" />
+        <button type="submit">Server に送信</button>
+      </form>
+      <h3>form message: {formMessage}</h3>
+      <h3>sent message: {sentMessage}</h3>
 
       <Grid
         templateAreas={`"header header header"
@@ -115,7 +234,6 @@ export default function Home() {
         </GridItem>
         <GridItem overflow="scroll" pl="2" area={"main"}>
           <Box marginLeft="12%" marginTop="2%">
-            <DisplayState></DisplayState>
             <NetworkCanvas></NetworkCanvas>
           </Box>
         </GridItem>

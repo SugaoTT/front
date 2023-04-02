@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { GUIManager } from "@/script/GUIManager";
+import { NWInterface } from "./NWInterface";
 
 /** 各種ノードのおおもとのクラス、コンテナを継承している */
 export class AbstractNode {
@@ -14,6 +15,12 @@ export class AbstractNode {
 
   /** コンソールログを格納 */
   private _consoleLog!: string;
+
+  /** メモの内容を格納 */
+  private _memoContent!: string;
+
+  /** インタフェースリストを格納するコレクション */
+  protected _list_eth: Array<NWInterface> = new Array();
 
   public constructor(nodeType: string) {
     this._nodeType = nodeType; //TODO enumとか使ったほうがいい
@@ -59,5 +66,29 @@ export class AbstractNode {
 
   public get nodeType(): string {
     return this._nodeType;
+  }
+
+  public get ethList() {
+    return this._list_eth;
+  }
+
+  public addInterface(cableName: string) {
+    this._list_eth.push(new NWInterface(this.getNextEthName(), cableName));
+  }
+
+  /** インタフェースを取得する
+   * 存在しなければnullを返す */
+  /*public getEthinterface(name: string): NWInterface | null {
+    for (var i: number = 0; i < this._list_eth.length; i++) {
+      if ((this._list_eth[i] as NWInterface).ethName == name) {
+        return this._list_eth[i] as NWInterface;
+      }
+    }
+    return null;
+  }*/
+
+  /** 次の numbererfaceの名前を返す */
+  public getNextEthName(): string {
+    return "net" + this._list_eth.length.toString();
   }
 }
