@@ -8,18 +8,15 @@ import {
 } from "react";
 
 const StateContext = createContext({
-  /*connectMode: false,
+  connectMode: false,
   connectStatus: "",
   operatingNode: "",
+  isConnected: false,
   changeConnectMode: (connectMode: boolean) => {},
   changeConnectStatus: (connectStatus: string) => {},
   changeOperatingNode: (nodeName: string) => {},
 
-
   changeIsConnected: (bool: boolean) => {},
-  changeFormMessage: (formMsg: string) =>{},
-  changeSentMessage: (sentMsg: string) =>{},
-*/
 });
 
 interface Props {
@@ -30,17 +27,7 @@ const StateProvider = ({ children }: Props): JSX.Element => {
   const [connectMode, setConnectMode] = useState(false);
   const [connectStatus, setConnectStatus] = useState("");
   const [operatingNode, setOperatingNode] = useState("");
-
-  const [socket, setSocket] = useState<WebSocket>();
   const [isConnected, setIsConnected] = useState(false);
-  const [formMessage, setFormMessage] = useState("");
-  const [sentMessage, setSentMessage] = useState("");
-
-  const [msg, setMsg] = useState("");
-
-  //const [isConnected, setIsConnected] = useState(false);
-  //const [formMessage, setFormMessage] = useState("");
-  //const [sentMessage, setSentMessage] = useState("");
 
   const changeConnectMode = useCallback((connectMode: boolean) => {
     setConnectMode(connectMode);
@@ -55,40 +42,6 @@ const StateProvider = ({ children }: Props): JSX.Element => {
   const changeIsConnected = useCallback((bool: boolean) => {
     setIsConnected(bool);
   }, []);
-  const changeFormMessage = useCallback((formMsg: string) => {
-    setFormMessage(formMsg);
-  }, []);
-  const changeSentMessage = useCallback((sentMsg: string) => {
-    setSentMessage(sentMsg);
-  }, []);
-
-  const changeMsg = useCallback((msg: string) => {
-    setMsg(msg);
-  }, []);
-
-  useEffect(() => {
-    /*const newSocket = new WebSocket("ws://localhost:8080/socket");
-
-    newSocket.onopen = function () {
-      changeIsConnected(true);
-      console.log("Connected");
-    };
-    newSocket.onclose = function () {
-      console.log("closed");
-      changeIsConnected(false);
-    };
-    newSocket.onmessage = function (event) {
-      changeSentMessage(event.data);
-    };
-    setSocket(newSocket);
-    //console.log(newSocket);
-    return () => {
-      if (newSocket == null) {
-        return;
-      }
-      newSocket.close();
-    };*/
-  }, []);
 
   return (
     <StateContext.Provider
@@ -100,16 +53,8 @@ const StateProvider = ({ children }: Props): JSX.Element => {
         operatingNode,
         changeOperatingNode,
 
-        socket,
         isConnected,
-        formMessage,
-        sentMessage,
         changeIsConnected,
-        changeFormMessage,
-        changeSentMessage,
-
-        msg,
-        changeMsg,
       }}
     >
       {children}

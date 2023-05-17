@@ -8,8 +8,8 @@ export class Console {
   //現在操作中のノード名
   private operatingNode = "";
   //xtermの部品達
-  private term!: Terminal;
-  private fitAddon!: FitAddon;
+  public term!: Terminal;
+  public fitAddon!: FitAddon;
 
   //プロンプトの宣言
   private prompt: string;
@@ -154,7 +154,7 @@ export class Console {
           case "Enter": //Enterキーが押下されたときの処理
             if (this.buffer !== "") {
               this.commandHandler(this.buffer);
-              this.writePrompt();
+              this.writeln("");
               this.buffer = "";
             } else {
               this.writePrompt();

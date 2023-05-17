@@ -72,8 +72,21 @@ export class AbstractNode {
     return this._list_eth;
   }
 
-  public addInterface(cableName: string) {
-    this._list_eth.push(new NWInterface(this.getNextEthName(), cableName));
+  public addInterface(cableName: string): string {
+    let ethName = this.getNextEthName();
+    this._list_eth.push(new NWInterface(ethName, cableName));
+    return ethName;
+  }
+
+  public getInterfaceByEthName(ethName: string): NWInterface | null {
+    let eth: NWInterface;
+    for (let i: number = 0; i < this._list_eth.length; i++) {
+      eth = this._list_eth[i];
+      if (ethName == eth.ethName) {
+        return eth;
+      }
+    }
+    return null;
   }
 
   /** インタフェースを取得する

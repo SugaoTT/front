@@ -2,8 +2,15 @@ import { Terminal } from "xterm";
 import { AbstractNode } from "./AbstractNode";
 import { AbstractSocket } from "./AbstractSocket";
 import { Console } from "../components/rightBar/Console";
+import { Handler } from "./handler/Handler";
+import { AbstractMessage } from "./message/AbstractMessage";
+import { L2TP_SESSION_ID_REQUEST } from "./message/concrete/toServer/L2TP_SESSION_ID_REQUEST";
+import { L2TP_TUNNEL_ID_REQUEST } from "./message/concrete/toServer/L2TP_TUNNEL_ID_REQUEST";
 
 export class GUIManager {
+  /** 通信に利用するハンドラー*/
+  private _handler: Handler;
+
   /** 自身を格納する変数*/
   private static _guimanager: GUIManager;
 
@@ -31,6 +38,18 @@ export class GUIManager {
   private _cables: number;
 
   /**
+   * L2TPのセッションIDを管理
+   */
+  /** これサーバで実装しないとダメ */
+  private _l2tp_sessionID: number = 0;
+
+  /**
+   * L2TPのトンネルIDを管理
+   */
+  /** これサーバで実装しないとダメ */
+  private _l2tp_tunnelID: number = 0;
+
+  /**
    * 通信用ソケット
    */
   private _socket: AbstractSocket;
@@ -47,8 +66,14 @@ export class GUIManager {
     return this._guimanager;
   }
 
+  /** ハンドラーを示すゲッター */
+  public get handler(): Handler {
+    return this._handler;
+  }
+
   /** コンストラクタ */
   private constructor() {
+    this._handler = new Handler();
     this._list_nodes = new Array();
     this._list_routers = new Array();
     this._list_switches = new Array();
@@ -82,6 +107,11 @@ export class GUIManager {
 
   public get socket() {
     return this._socket;
+  }
+
+  /** ハンドラーのメソッドをカプセル化*/
+  public eventHandle(msg: AbstractMessage): void {
+    this._handler.handleToServer.bind(this._handler)(msg);
   }
 
   /** ノード管理用リストに新たなノードを追加*/
@@ -134,5 +164,32 @@ export class GUIManager {
 
   public get currentConsole() {
     return this._currentConsole;
+  }
+
+  /** これサーバで実装しないとダメ */
+  public getNextSessionID(
+    srcUUID: string,
+    srcEthName: string,
+    dstUUID: string,
+    dstEthName: string
+  ): number {
+    //Nodeを生成するメッセージを作成してHandlerへ送る
+    let tmp_msg: L2TP_SESSION_ID_REQUEST = new L2TP_SESSION_ID_REQUEST();
+    tmp_msg.srcUUID = srcUUID;
+    tmp_msg.srcEthName = srcEthName;
+    tmp_msg.dstUUID = dstUUID;
+    tmp_msg.dstEthName = dstEthName;
+
+    GUIManager.guimanager.eventHandle(tmp_msg);
+
+    //this._l2tp_sessionID++;
+    return this._l2tp_sessionID;
+  }
+  /** これサーバで実装しないとダメ */
+  public getNextTunnelID(): number {
+    let tmp_msg: L2TP_TUNNEL_ID_REQUEST = new L2TP_TUNNEL_ID_REQUEST();
+    GUIManager.guimanager.eventHandle(tmp_msg);
+    //this._l2tp_tunnelID += 2;
+    return this._l2tp_tunnelID;
   }
 }

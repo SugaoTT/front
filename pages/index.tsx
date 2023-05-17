@@ -44,7 +44,7 @@ export default function Home() {
   const [formMessage, setFormMessage] = useState("");
   const [sentMessage, setSentMessage] = useState("");
 
-  const { msg, changeMsg, operatingNode } = useContext(StateContext);
+  //const { msg, changeMsg, operatingNode } = useContext(StateContext);
 
   /*
   const {
@@ -106,6 +106,15 @@ export default function Home() {
     console.log(isConnected);
   };
 
+  function isJsonString(str: string): boolean {
+    try {
+      JSON.parse(str);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   useEffect(() => {
     // console.log(socket);
 
@@ -124,6 +133,15 @@ export default function Home() {
       setIsConnected(false);
     };
     socket.onmessage = function (event) {
+      if (isJsonString(event.data)) {
+        const jsonObject = JSON.parse(event.data);
+        // JSONデータを処理するロジックをここに記述します
+
+        GUIManager.guimanager.handler.receiveJSON(event.data);
+        //console.log(jsonObject); // パースされたJSONオブジェクト
+      }
+
+      console.log(event.data);
       setSentMessage(event.data);
 
       //let terminal = GUIManager.guimanager.terminal;
@@ -131,8 +149,30 @@ export default function Home() {
       if (currentConsole != undefined) {
         //GUIManager.guimanager.terminal.writeln(event.data);
         //GUIManager.guimanager.terminal.write(operatingNode + ">");
-        currentConsole.writeln(event.data);
-        currentConsole.writePrompt();
+        //currentConsole.writeln(event.data);
+
+        let outputs: Array<string> = new Array();
+        let arr = event.data.split(/\n/);
+
+        for (const value of arr) {
+          console.log(value);
+
+          if (value == "EXEC COMPLETE") {
+            currentConsole.writePrompt();
+          } else {
+            currentConsole.writeln(value);
+          }
+
+          // a b cの順で出力される
+        }
+
+        //console.log(arr);
+
+        //currentConsole.writeln(event.data.replace(/\s{5,}/g, "\n"));
+        //console.log(event.data);
+        //currentConsole.term.clear();
+        //currentConsole.fitAddon.fit();
+        //currentConsole.writePrompt();
       }
 
       //changeMsg(event.data);
@@ -189,13 +229,12 @@ export default function Home() {
 
       {/*
       <Parent />
-  */}
+  
 
       <button onClick={testMsg}>MSG</button>
-
       <button onClick={testSocket}>confirm socket</button>
       {/*<button onClick={sendMsg}>SEND</button>
-      <h3>sent message: {sentMessage}</h3>*/}
+      <h3>sent message: {sentMessage}</h3>
 
       <h1>WebSocket is connected : {String(isConnected)}</h1>
       <form onSubmit={sendData}>
@@ -203,21 +242,21 @@ export default function Home() {
         <button type="submit">Server に送信</button>
       </form>
       <h3>form message: {formMessage}</h3>
-      <h3>sent message: {sentMessage}</h3>
+      <h3>sent message: {sentMessage}</h3>*/}
 
       <Grid
         templateAreas={`"header header header"
                       "tool-bar tool-bar tool-bar"
                        "left-bar main right-bar"`}
         gridTemplateRows={"100px 40px 1fr"}
-        gridTemplateColumns={"150px 1fr 350px"}
+        gridTemplateColumns={"150px 1fr 550px"}
         h="1080px"
         gap="1"
         color="blackAlpha.700"
         fontWeight="bold"
       >
         <GridItem pl="2" bg="gray.100" border="1px" area={"header"}>
-          <Header></Header>
+          <Header isConnected={isConnected}></Header>
         </GridItem>
         <GridItem pl="2" bg="gray.100" border="1px" area={"tool-bar"}>
           <ToolBar></ToolBar>
@@ -233,7 +272,7 @@ export default function Home() {
           </Box>
         </GridItem>
         <GridItem overflow="scroll" pl="2" area={"main"}>
-          <Box marginLeft="12%" marginTop="2%">
+          <Box marginLeft="3%" marginTop="2%">
             <NetworkCanvas></NetworkCanvas>
           </Box>
         </GridItem>

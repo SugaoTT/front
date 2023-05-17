@@ -105,14 +105,52 @@ export const NetworkCanvas = () => {
 
         //ケーブル名を作成
         let cableName =
-          srcNode + "-" + dstNode + GUIManager.guimanager.updateCables();
+          srcNode + "-" + dstNode + "-" + GUIManager.guimanager.updateCables();
 
         //Nodeインスタンスに結線情報を登録
         let srcUUID = GUIManager.guimanager.getUUIDByNodeName(srcNode);
         let dstUUID = GUIManager.guimanager.getUUIDByNodeName(dstNode);
 
-        GUIManager.guimanager.selectedByUUID(srcUUID).addInterface(cableName);
-        GUIManager.guimanager.selectedByUUID(dstUUID).addInterface(cableName);
+        let srcEthName = GUIManager.guimanager
+          .selectedByUUID(srcUUID)
+          .addInterface(cableName);
+        let dstEthName = GUIManager.guimanager
+          .selectedByUUID(dstUUID)
+          .addInterface(cableName);
+
+        /** L2TPに必要な情報をインタフェースに設定 */
+        let sessionID = GUIManager.guimanager.getNextSessionID(
+          srcUUID!,
+          srcEthName,
+          dstUUID!,
+          dstEthName
+        ); //srcUUID, srcEthName，dstUUID, dstEthNameを引数としてjsonで投げる
+        let srcTunnelID = GUIManager.guimanager.getNextTunnelID();
+        let remoteTunnelID = srcTunnelID + 1;
+
+        GUIManager.guimanager
+          .selectedByUUID(srcUUID)
+          ?.getInterfaceByEthName(srcEthName)
+          ?.setL2TP(sessionID, srcTunnelID, remoteTunnelID);
+
+        GUIManager.guimanager
+          .selectedByUUID(dstUUID)
+          ?.getInterfaceByEthName(srcEthName)
+          ?.setL2TP(sessionID, remoteTunnelID, srcTunnelID);
+
+        console.log(
+          "接続元のインタフェース情報",
+          GUIManager.guimanager
+            .selectedByUUID(srcUUID)
+            ?.getInterfaceByEthName(srcEthName)
+        );
+
+        console.log(
+          "接続先のインタフェース情報",
+          GUIManager.guimanager
+            .selectedByUUID(dstUUID)
+            ?.getInterfaceByEthName(srcEthName)
+        );
 
         connect(cableName);
 
@@ -194,7 +232,7 @@ export const NetworkCanvas = () => {
         e.preventDefault();
       }}
       onDrop={onDrop}
-      width="1000px"
+      width="930px"
       height="750px"
       border="1px"
     ></Box>

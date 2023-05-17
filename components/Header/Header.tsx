@@ -12,9 +12,10 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
+import { Wifi_ON, Wifi_OFF } from "./connectStatusIcons";
 import { useState } from "react";
 
-export default function Header() {
+export default function Header(props: any) {
   let [projectName, setName] = useState("プロジェクト名未設定");
   let inputValue: string = "";
 
@@ -34,6 +35,10 @@ export default function Header() {
     <>
       <Box fontSize="4xl" onClick={onOpen}>
         {projectName}
+      </Box>
+      <Box position="absolute" top="0%" right="0%">
+        {props.isConnected && <Wifi_ON w="35px" h="35px"></Wifi_ON>}
+        {!props.isConnected && <Wifi_OFF w="35px" h="35px"></Wifi_OFF>}
       </Box>
       <Button
         fontSize="smaller"

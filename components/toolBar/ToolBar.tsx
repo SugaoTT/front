@@ -25,6 +25,8 @@ import {
   Cable,
   RocketLaunch,
 } from "./Icons";
+import { LAUNCH_NETWORK } from "../../script/message/concrete/toServer/LAUNCH_NETWORK";
+import { GUIManager } from "@/script/GUIManager";
 
 export default function ToolBar() {
   const { changeConnectMode, connectMode, changeConnectStatus, connectStatus } =
@@ -68,6 +70,21 @@ export default function ToolBar() {
 
   const rocket_launch = () => {
     console.log("clicked rocket_launch button!");
+
+    //Nodeを生成するメッセージを作成してHandlerへ送る
+    let tmp_msg: LAUNCH_NETWORK = new LAUNCH_NETWORK();
+
+    //ここでネットワークトポロジを作成する
+    let jsonData = {
+      name: "r1",
+      nic1: "eth0",
+      nic2: "eth1",
+    };
+
+    tmp_msg.networkTopology = JSON.stringify(jsonData);
+
+    GUIManager.guimanager.eventHandle(tmp_msg);
+    //GUIManager.guimanager.socket?.send(JSON.stringify(tmp_msg));
   };
 
   return (
