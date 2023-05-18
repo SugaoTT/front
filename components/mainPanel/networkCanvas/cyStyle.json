@@ -13,7 +13,17 @@
     "style": {
       "curve-style": "bezier",
       "width": 2,
-      "line-color": "black"
+      "line-color": "black",
+      "target-label": "data(targetLabel)",
+      "target-text-offset": 20,
+      "target-text-margin-x": 20,
+      "target-text-margin-y": 20,
+      "source-label": "data(sourceLabel)",
+      "source-text-offset": 20,
+      "source-text-margin-x": 20,
+      "source-text-margin-y": 20,
+      "text-outline-color": "#ffffff",
+      "text-outline-width": 2
     }
   },
   {
@@ -24,7 +34,9 @@
       "background-opacity": 0,
       "background-image": "https://i.imgur.com/AZYdRRK.png",
       "label": "data(id)",
-      "text-margin-y": 110
+      "text-margin-y": 110,
+      "text-outline-color": "#ffffff",
+      "text-outline-width": 2
     }
   },
   {
@@ -35,7 +47,9 @@
       "background-opacity": 0,
       "background-image": "https://i.imgur.com/h0CeoIu.png",
       "label": "data(id)",
-      "text-margin-y": 110
+      "text-margin-y": 110,
+      "text-outline-color": "#ffffff",
+      "text-outline-width": 2
     }
   },
   {
@@ -46,7 +60,9 @@
       "background-opacity": 0,
       "background-image": "https://i.imgur.com/VoUNsTC.png",
       "label": "data(id)",
-      "text-margin-y": 110
+      "text-margin-y": 110,
+      "text-outline-color": "#ffffff",
+      "text-outline-width": 2
     }
   }
 ]

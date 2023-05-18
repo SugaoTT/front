@@ -102,6 +102,7 @@ export class AbstractNode {
 
   /** 次の numbererfaceの名前を返す */
   public getNextEthName(): string {
-    return "net" + this._list_eth.length.toString();
+    let interfaceNum = this._list_eth.length + 1;
+    return "net" + interfaceNum;
   }
 }

@@ -1,6 +1,6 @@
 import { AbstractMessage } from "../AbstractMessage";
 import { LAUNCH_NETWORK } from "../concrete/toServer/LAUNCH_NETWORK";
-import { L2TP_SESSION_ID_REQUEST } from "../concrete/toServer/L2TP_SESSION_ID_REQUEST";
+import { L2TP_INFO_REQUEST } from "../concrete/toServer/L2TP_INFO_REQUEST";
 import { L2TP_TUNNEL_ID_REQUEST } from "../concrete/toServer/L2TP_TUNNEL_ID_REQUEST";
 
 export class JSONCreator {
@@ -21,9 +21,9 @@ export class JSONCreator {
         jsonData = JSON.stringify(tmpJSON);
         console.log(jsonData);
         break;
-      case "L2TP_SESSION_ID_REQUEST":
-        let L2TP_SESSION_ID_REQUEST_msg: L2TP_SESSION_ID_REQUEST =
-          msg as L2TP_SESSION_ID_REQUEST;
+      case "L2TP_INFO_REQUEST":
+        let L2TP_SESSION_ID_REQUEST_msg: L2TP_INFO_REQUEST =
+          msg as L2TP_INFO_REQUEST;
         tmpJSON = {
           messageType: type,
           srcUUID: L2TP_SESSION_ID_REQUEST_msg.srcUUID,
@@ -32,7 +32,7 @@ export class JSONCreator {
           dstEthName: L2TP_SESSION_ID_REQUEST_msg.dstEthName,
         };
         jsonData = JSON.stringify(tmpJSON);
-        console.log("L2TP_SESSION_ID_REQUEST", jsonData);
+        console.log("L2TP_INFO_REQUEST", jsonData);
         break;
       case "L2TP_TUNNEL_ID_REQUEST":
         let L2TP_TUNNEL_ID_REQUEST: L2TP_TUNNEL_ID_REQUEST =

@@ -81,7 +81,7 @@ export class Console {
 
     //入力コマンドをもとに送信コマンドを作成
     let jsonData = {
-      "message-type": "console",
+      MessageType: "console",
       "target-uuid": targetUUID,
       "target-node-name": this.operatingNode,
       content: this.buffer,

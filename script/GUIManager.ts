@@ -4,7 +4,7 @@ import { AbstractSocket } from "./AbstractSocket";
 import { Console } from "../components/rightBar/Console";
 import { Handler } from "./handler/Handler";
 import { AbstractMessage } from "./message/AbstractMessage";
-import { L2TP_SESSION_ID_REQUEST } from "./message/concrete/toServer/L2TP_SESSION_ID_REQUEST";
+import { L2TP_INFO_REQUEST } from "./message/concrete/toServer/L2TP_INFO_REQUEST";
 import { L2TP_TUNNEL_ID_REQUEST } from "./message/concrete/toServer/L2TP_TUNNEL_ID_REQUEST";
 
 export class GUIManager {
@@ -167,14 +167,14 @@ export class GUIManager {
   }
 
   /** これサーバで実装しないとダメ */
-  public getNextSessionID(
+  public getL2TPInfo(
     srcUUID: string,
     srcEthName: string,
     dstUUID: string,
     dstEthName: string
   ): number {
     //Nodeを生成するメッセージを作成してHandlerへ送る
-    let tmp_msg: L2TP_SESSION_ID_REQUEST = new L2TP_SESSION_ID_REQUEST();
+    let tmp_msg: L2TP_INFO_REQUEST = new L2TP_INFO_REQUEST();
     tmp_msg.srcUUID = srcUUID;
     tmp_msg.srcEthName = srcEthName;
     tmp_msg.dstUUID = dstUUID;

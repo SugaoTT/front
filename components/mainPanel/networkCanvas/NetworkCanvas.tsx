@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useContext } from "react";
 //import { StateContext } from "@/pages";
 import { StateContext } from "@/components/context/StateContext";
+import { stringify } from "querystring";
 
 //type Props = {
 //  changeConnectMode: (connectMode: boolean) => void;
@@ -119,40 +120,40 @@ export const NetworkCanvas = () => {
           .addInterface(cableName);
 
         /** L2TPに必要な情報をインタフェースに設定 */
-        let sessionID = GUIManager.guimanager.getNextSessionID(
+        let sessionID = GUIManager.guimanager.getL2TPInfo(
           srcUUID!,
           srcEthName,
           dstUUID!,
           dstEthName
         ); //srcUUID, srcEthName，dstUUID, dstEthNameを引数としてjsonで投げる
-        let srcTunnelID = GUIManager.guimanager.getNextTunnelID();
-        let remoteTunnelID = srcTunnelID + 1;
+        // let srcTunnelID = GUIManager.guimanager.getNextTunnelID();
+        // let remoteTunnelID = srcTunnelID + 1;
 
-        GUIManager.guimanager
-          .selectedByUUID(srcUUID)
-          ?.getInterfaceByEthName(srcEthName)
-          ?.setL2TP(sessionID, srcTunnelID, remoteTunnelID);
+        // GUIManager.guimanager
+        //   .selectedByUUID(srcUUID)
+        //   ?.getInterfaceByEthName(srcEthName)
+        //   ?.setL2TP(sessionID, srcTunnelID, remoteTunnelID);
 
-        GUIManager.guimanager
-          .selectedByUUID(dstUUID)
-          ?.getInterfaceByEthName(srcEthName)
-          ?.setL2TP(sessionID, remoteTunnelID, srcTunnelID);
+        // GUIManager.guimanager
+        //   .selectedByUUID(dstUUID)
+        //   ?.getInterfaceByEthName(srcEthName)
+        //   ?.setL2TP(sessionID, remoteTunnelID, srcTunnelID);
 
-        console.log(
-          "接続元のインタフェース情報",
-          GUIManager.guimanager
-            .selectedByUUID(srcUUID)
-            ?.getInterfaceByEthName(srcEthName)
-        );
+        // console.log(
+        //   "接続元のインタフェース情報",
+        //   GUIManager.guimanager
+        //     .selectedByUUID(srcUUID)
+        //     ?.getInterfaceByEthName(srcEthName)
+        // );
 
-        console.log(
-          "接続先のインタフェース情報",
-          GUIManager.guimanager
-            .selectedByUUID(dstUUID)
-            ?.getInterfaceByEthName(srcEthName)
-        );
+        // console.log(
+        //   "接続先のインタフェース情報",
+        //   GUIManager.guimanager
+        //     .selectedByUUID(dstUUID)
+        //     ?.getInterfaceByEthName(srcEthName)
+        // );
 
-        connect(cableName);
+        connect(cableName, srcEthName, dstEthName);
 
         console.log(GUIManager.guimanager.selectedByUUID(srcUUID));
 
@@ -168,13 +169,19 @@ export const NetworkCanvas = () => {
     //props.changeConnectMode();
   };
 
-  const connect = (cableName: string) => {
+  const connect = (
+    cableName: string,
+    srcEthName: string,
+    dstEthName: string
+  ) => {
     console.log("結線処理をします。");
     cy.add({
       data: {
         id: cableName,
         source: srcNode,
         target: dstNode,
+        sourceLabel: srcEthName,
+        targetLabel: dstEthName,
       },
     });
   };

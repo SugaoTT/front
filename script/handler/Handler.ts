@@ -3,7 +3,7 @@ import { AbstractMessage } from "../message/AbstractMessage";
 import { GUIManager } from "@/script/GUIManager";
 import { JSONCreator } from "../message/json/JSONCreator";
 import { JSONAnalyzer } from "../message/json/JSONAnalyzer";
-import { L2TP_SESSION_ID } from "../message/concrete/fromServer/L2TP_SESSION_ID";
+import { L2TP_INFO } from "../message/concrete/fromServer/L2TP_INFO";
 
 export class Handler {
   /** サーバとメッセージのやり取りをするためのWebSocket */
@@ -29,15 +29,51 @@ export class Handler {
     console.log("receiveJSON", msg);
 
     switch (msg.messageType) {
-      case "L2TP_SESSION_ID":
-        this.methodOfL2TP_SESSION_ID(msg as L2TP_SESSION_ID);
+      case "L2TP_INFO":
+        this.methodOfL2TP_INFO(msg as L2TP_INFO);
         break;
     }
   }
 
-  private methodOfL2TP_SESSION_ID(msg: L2TP_SESSION_ID) {
+  private methodOfL2TP_INFO(msg: L2TP_INFO) {
     // GUIManager.guimanager
     //   .selectedByUUID(msg.srcUUID)
     //   ?.getInterfaceByEthName(msg.srcEthName)?.setL2TP;
+
+    GUIManager.guimanager
+      .selectedByUUID(msg.srcUUID)
+      ?.getInterfaceByEthName(msg.srcEthName)
+      ?.setL2TP(msg.sessionID, msg.srcTunnelID, msg.dstTunnelID);
+
+    GUIManager.guimanager
+      .selectedByUUID(msg.dstUUID)
+      ?.getInterfaceByEthName(msg.dstEthName)
+      ?.setL2TP(msg.sessionID, msg.dstTunnelID, msg.srcTunnelID);
+
+    console.log(
+      "接続元機器: " +
+        GUIManager.guimanager.selectedByUUID(msg.srcUUID)?.nodeName +
+        "のインタフェース" +
+        GUIManager.guimanager
+          .selectedByUUID(msg.srcUUID)
+          ?.getInterfaceByEthName(msg.srcEthName)?.ethName +
+        "のL2TP情報を表示します",
+      GUIManager.guimanager
+        .selectedByUUID(msg.srcUUID)
+        ?.getInterfaceByEthName(msg.srcEthName)?.L2TP
+    );
+
+    console.log(
+      "接続先機器: " +
+        GUIManager.guimanager.selectedByUUID(msg.dstUUID)?.nodeName +
+        "のインタフェース" +
+        GUIManager.guimanager
+          .selectedByUUID(msg.dstUUID)
+          ?.getInterfaceByEthName(msg.dstEthName)?.ethName +
+        "のL2TP情報を表示します",
+      GUIManager.guimanager
+        .selectedByUUID(msg.dstUUID)
+        ?.getInterfaceByEthName(msg.dstEthName)?.L2TP
+    );
   }
 }

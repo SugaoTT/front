@@ -1,6 +1,6 @@
 import { AbstractMessage } from "../../AbstractMessage";
 
-export class L2TP_SESSION_ID_REQUEST extends AbstractMessage {
+export class L2TP_INFO_REQUEST extends AbstractMessage {
   private _srcUUID!: string;
   private _srcEthName!: string;
   private _dstUUID!: string;
@@ -8,7 +8,7 @@ export class L2TP_SESSION_ID_REQUEST extends AbstractMessage {
 
   public constructor() {
     super();
-    this.messageType = "L2TP_SESSION_ID_REQUEST";
+    this.messageType = "L2TP_INFO_REQUEST";
   }
 
   public set srcUUID(srcUUID: string) {

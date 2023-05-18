@@ -30,10 +30,14 @@ export class NWInterface {
   }
 
   public setL2TP(
-    _sessionID: number,
-    _selfTunnelID: number,
-    _targetTunnelID: number
+    _sessionID: string,
+    _selfTunnelID: string,
+    _targetTunnelID: string
   ) {
     this._L2TP = new L2TP(_sessionID, _selfTunnelID, _targetTunnelID);
+  }
+
+  public get L2TP() {
+    return this._L2TP;
   }
 }
