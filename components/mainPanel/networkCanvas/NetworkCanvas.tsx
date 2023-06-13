@@ -119,6 +119,37 @@ export const NetworkCanvas = () => {
           .selectedByUUID(dstUUID)
           .addInterface(cableName);
 
+        /** 結線先機器の情報をインタフェースに設定 */
+        GUIManager.guimanager
+          .selectedByUUID(srcUUID)
+          ?.getInterfaceByEthName(srcEthName)
+          ?.setTargetPodName(dstUUID);
+        GUIManager.guimanager
+          .selectedByUUID(srcUUID)
+          ?.getInterfaceByEthName(srcEthName)
+          ?.setTargetPodEth(dstEthName);
+
+        GUIManager.guimanager
+          .selectedByUUID(dstUUID)
+          ?.getInterfaceByEthName(dstEthName)
+          ?.setTargetPodName(srcUUID);
+        GUIManager.guimanager
+          .selectedByUUID(dstUUID)
+          ?.getInterfaceByEthName(dstEthName)
+          ?.setTargetPodEth(srcEthName);
+
+        console.log(
+          GUIManager.guimanager
+            .selectedByUUID(srcUUID)
+            ?.getInterfaceByEthName(srcEthName)
+        );
+
+        console.log(
+          GUIManager.guimanager
+            .selectedByUUID(dstUUID)
+            ?.getInterfaceByEthName(dstEthName)
+        );
+
         /** L2TPに必要な情報をインタフェースに設定 */
         let sessionID = GUIManager.guimanager.getL2TPInfo(
           srcUUID!,

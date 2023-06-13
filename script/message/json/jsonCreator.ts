@@ -1,5 +1,5 @@
 import { AbstractMessage } from "../AbstractMessage";
-import { LAUNCH_NETWORK } from "../concrete/toServer/LAUNCH_NETWORK";
+import { LAUNCH_NETWORK_REQUEST } from "../concrete/toServer/LAUNCH_NETWORK_REQUEST";
 import { L2TP_INFO_REQUEST } from "../concrete/toServer/L2TP_INFO_REQUEST";
 import { L2TP_TUNNEL_ID_REQUEST } from "../concrete/toServer/L2TP_TUNNEL_ID_REQUEST";
 
@@ -10,11 +10,12 @@ export class JSONCreator {
     let jsonData: string = "";
 
     switch (type) {
-      case "LAUNCH_NETWORK":
-        let launchNetwork_msg: LAUNCH_NETWORK = msg as LAUNCH_NETWORK;
+      case "LAUNCH_NETWORK_REQUEST":
+        let launchNetwork_msg: LAUNCH_NETWORK_REQUEST =
+          msg as LAUNCH_NETWORK_REQUEST;
         //入力コマンドをもとに送信コマンドを作成
         tmpJSON = {
-          "message-type": type,
+          messageType: type,
           networkTopology: launchNetwork_msg.networkTopology,
         };
         console.log(tmpJSON);

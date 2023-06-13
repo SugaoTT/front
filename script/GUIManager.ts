@@ -57,6 +57,16 @@ export class GUIManager {
   /** ターミナル */
   private _currentConsole: Console;
 
+  /**
+   * 生成する機器の個数を格納する一時的パラメータ
+   */
+  private _tmpNodeNum: number = 0;
+
+  /**
+   * 生成した機器の個数を格納する一時的パラメータ
+   */
+  private _tmpCreatedNodeNum: number = 0;
+
   /** シングルトンパターンの実装 */
   public static get guimanager(): GUIManager {
     if (this._guimanager == null) {
@@ -191,5 +201,29 @@ export class GUIManager {
     GUIManager.guimanager.eventHandle(tmp_msg);
     //this._l2tp_tunnelID += 2;
     return this._l2tp_tunnelID;
+  }
+
+  public get tmpNodeNum(): number {
+    return this._tmpNodeNum;
+  }
+
+  public set tmpNodeNum(tmpNodeNum: number) {
+    this._tmpNodeNum = tmpNodeNum;
+  }
+
+  public get tmpCreatedNodeNum(): number {
+    return this._tmpCreatedNodeNum;
+  }
+
+  public set tmpCreatedNodeNum(tmpCreatedNodeNum: number) {
+    this._tmpCreatedNodeNum = tmpCreatedNodeNum;
+  }
+
+  public isNodeCreateComplete(): boolean {
+    if (this.tmpNodeNum == this.tmpCreatedNodeNum) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

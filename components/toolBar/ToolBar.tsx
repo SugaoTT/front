@@ -12,6 +12,14 @@ import {
   Icon,
   IconButton,
   Text,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { useState, useRef, useContext } from "react";
 import {
@@ -24,13 +32,69 @@ import {
   ZoomOut,
   Cable,
   RocketLaunch,
+  School,
 } from "./Icons";
-import { LAUNCH_NETWORK } from "../../script/message/concrete/toServer/LAUNCH_NETWORK";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
+  Portal,
+} from "@chakra-ui/react";
+import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
+
+import { LAUNCH_NETWORK_REQUEST } from "../../script/message/concrete/toServer/LAUNCH_NETWORK_REQUEST";
 import { GUIManager } from "@/script/GUIManager";
 
 export default function ToolBar() {
   const { changeConnectMode, connectMode, changeConnectStatus, connectStatus } =
     useContext(StateContext);
+
+  let [practiceContent, setContent] = useState("演習を選択して下さい");
+
+  const setPracticeContent = (content: string) => {
+    setContent(content);
+  };
+
+  let [loadStatus, setStatus] = useState(
+    "　　ネットワークトポロジの読み込み中です"
+  );
+
+  const setLoadStatus = (status: string) => {
+    setStatus(status);
+  };
+
+  const [isLoadComplete, setLoadComplete] = useState(false);
+  const changeLoadComplete = () => {
+    setLoadComplete(!isLoadComplete);
+  };
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const finalRef = useRef(null);
+
+  interface InterfaceItem {
+    name: string;
+    "target-pod-name": string;
+    "target-pod-nic": string;
+    "self-tunnel-id": string;
+    "target-tunnel-id": string;
+    "session-id": string;
+  }
+
+  interface Interface {
+    items: InterfaceItem[];
+  }
+
+  interface Pod {
+    "pod-name": string;
+    "pod-type": string;
+    interface: Interface;
+  }
 
   const open_in_new = () => {
     console.log("clicked open_in_new button!");
@@ -72,102 +136,233 @@ export default function ToolBar() {
     console.log("clicked rocket_launch button!");
 
     //Nodeを生成するメッセージを作成してHandlerへ送る
-    let tmp_msg: LAUNCH_NETWORK = new LAUNCH_NETWORK();
+    let tmp_msg: LAUNCH_NETWORK_REQUEST = new LAUNCH_NETWORK_REQUEST();
 
     //ここでネットワークトポロジを作成する
-    let jsonData = {
-      name: "r1",
-      nic1: "eth0",
-      nic2: "eth1",
-    };
+    // let jsonData = {
+    //   name: "r1",
+    //   nic1: "eth0",
+    //   nic2: "eth1",
+    // };
 
-    tmp_msg.networkTopology = JSON.stringify(jsonData);
+    let node_list = GUIManager.guimanager.list_nodes;
+    console.log("rocket_launch: ノードリストの表示", node_list);
 
-    GUIManager.guimanager.eventHandle(tmp_msg);
+    //生成するPodの個数を格納
+    GUIManager.guimanager.tmpNodeNum = node_list.length;
+    console.log(GUIManager.guimanager.tmpNodeNum);
+
+    for (let i = 0; i < node_list.length; i++) {
+      console.log(`この配列の${i + 1}番目は${node_list[i].nodeName}です`);
+
+      const myPod: Pod = {
+        "pod-name": node_list[i].UUID,
+        "pod-type": node_list[i].nodeType,
+        interface: {
+          items: [],
+        },
+      };
+
+      for (let j = 0; j < node_list[i].ethList.length; j++) {
+        myPod.interface.items.push({
+          name: node_list[i].ethList[j].ethName,
+          "target-pod-name": node_list[i].ethList[j].targetPodName,
+          "target-pod-nic": node_list[i].ethList[j].targetPodEth,
+          "self-tunnel-id": node_list[i].ethList[j].L2TP.selfTunnelID,
+          "target-tunnel-id": node_list[i].ethList[j].L2TP.remoteTunnelID,
+          "session-id": node_list[i].ethList[j].L2TP.sessionID,
+        });
+      }
+      console.log(myPod);
+      tmp_msg.networkTopology = JSON.stringify(myPod);
+      GUIManager.guimanager.eventHandle(tmp_msg);
+    }
+
+    //tmp_msg.networkTopology = JSON.stringify(jsonData);
+
+    //GUIManager.guimanager.eventHandle(tmp_msg);
     //GUIManager.guimanager.socket?.send(JSON.stringify(tmp_msg));
+
+    // 5秒待機する
+    //@TODO: ここは秒数で指定するのではなく，起動しているかどうかをメッセージで管理すべき
+    setTimeout(function () {
+      setLoadStatus("　　読み込みが完了しました");
+    }, 5000);
+    setTimeout(function () {
+      changeLoadComplete();
+    }, 5000);
+
+    setTimeout(onClose, 7000);
+  };
+
+  // const setStatus = () => {
+  //   setLoadStatus(inputValue);
+  //   onClose();
+  // };
+
+  const school = () => {
+    console.log("clicked school button!");
+  };
+
+  const ip = () => {
+    console.log("ip");
+    let content =
+      "ネットワーク機器にIPアドレスを設定して機器間を通信させよう．　　　　　　使用機器: ルータ1台，ホスト2台";
+    setPracticeContent(content);
+  };
+
+  const staticRoute = () => {
+    console.log("static");
+  };
+
+  const vlan = () => {
+    console.log("vlan");
   };
 
   return (
-    <HStack spacing="15px">
-      <IconButton
-        onClick={open_in_new}
-        w="35px"
-        h="35px"
-        aria-label="open in new"
-        icon={<OpenInNew w="35px" h="35px" />}
-      />
+    <>
+      <HStack spacing="15px">
+        <IconButton
+          onClick={open_in_new}
+          w="35px"
+          h="35px"
+          aria-label="open in new"
+          icon={<OpenInNew w="35px" h="35px" />}
+        />
 
-      <IconButton
-        onClick={save}
-        w="35px"
-        h="35px"
-        aria-label="save"
-        icon={<Save w="35px" h="35px" />}
-      />
+        <IconButton
+          onClick={save}
+          w="35px"
+          h="35px"
+          aria-label="save"
+          icon={<Save w="35px" h="35px" />}
+        />
 
-      <IconButton
-        onClick={arrow_back}
-        w="35px"
-        h="35px"
-        aria-label="arrow back"
-        icon={<ArrowBack w="35px" h="35px" />}
-      />
+        <IconButton
+          onClick={arrow_back}
+          w="35px"
+          h="35px"
+          aria-label="arrow back"
+          icon={<ArrowBack w="35px" h="35px" />}
+        />
 
-      <IconButton
-        onClick={arrow_forward}
-        w="35px"
-        h="35px"
-        aria-label="arrow forward"
-        icon={<ArrowForward w="35px" h="35px" />}
-      />
+        <IconButton
+          onClick={arrow_forward}
+          w="35px"
+          h="35px"
+          aria-label="arrow forward"
+          icon={<ArrowForward w="35px" h="35px" />}
+        />
 
-      <IconButton
-        onClick={backspace}
-        w="35px"
-        h="35px"
-        aria-label="backspace"
-        icon={<BackSpace w="35px" h="35px" />}
-      />
+        <IconButton
+          onClick={backspace}
+          w="35px"
+          h="35px"
+          aria-label="backspace"
+          icon={<BackSpace w="35px" h="35px" />}
+        />
 
-      <IconButton
-        onClick={zoom_in}
-        w="35px"
-        h="35px"
-        aria-label="zoom in"
-        icon={<ZoomIn w="35px" h="35px" />}
-      />
+        <IconButton
+          onClick={zoom_in}
+          w="35px"
+          h="35px"
+          aria-label="zoom in"
+          icon={<ZoomIn w="35px" h="35px" />}
+        />
 
-      <IconButton
-        onClick={zoom_out}
-        w="35px"
-        h="35px"
-        aria-label="zoom out"
-        icon={<ZoomOut w="35px" h="35px" />}
-      />
+        <IconButton
+          onClick={zoom_out}
+          w="35px"
+          h="35px"
+          aria-label="zoom out"
+          icon={<ZoomOut w="35px" h="35px" />}
+        />
 
-      <Center height="25px">
-        <Divider borderColor="#000000" orientation="vertical" />
-      </Center>
+        <Center height="25px">
+          <Divider borderColor="#000000" orientation="vertical" />
+        </Center>
 
-      <IconButton
-        onClick={cable}
-        w="35px"
-        h="35px"
-        aria-label="cable"
-        icon={<Cable w="35px" h="35px" />}
-      />
+        <IconButton
+          onClick={cable}
+          w="35px"
+          h="35px"
+          aria-label="cable"
+          icon={<Cable w="35px" h="35px" />}
+        />
 
-      {connectMode && <Text fontSize="lg">{connectStatus}</Text>}
+        {connectMode && <Text fontSize="lg">{connectStatus}</Text>}
 
-      <IconButton
-        onClick={rocket_launch}
-        w="35px"
-        h="35px"
-        aria-label="rocket launch"
-        icon={<RocketLaunch w="35px" h="35px" />}
-      />
+        <IconButton
+          onClick={() => {
+            onOpen();
+            rocket_launch();
+          }}
+          w="35px"
+          h="35px"
+          aria-label="rocket launch"
+          icon={<RocketLaunch w="35px" h="35px" />}
+        />
 
-      {/*<Text fontSize="lg">{guideMessage}</Text>*/}
-    </HStack>
+        <Popover>
+          <PopoverTrigger>
+            <IconButton
+              onClick={school}
+              w="35px"
+              h="35px"
+              aria-label="school"
+              icon={<School w="35px" h="35px" />}
+            />
+          </PopoverTrigger>
+          <Portal>
+            <PopoverContent>
+              <PopoverArrow />
+              <PopoverHeader>演習課題選択</PopoverHeader>
+              <PopoverCloseButton />
+              <PopoverBody>
+                <VStack>
+                  <Button onClick={ip} width="250px" colorScheme="blue">
+                    IPアドレス設定演習
+                  </Button>
+                  <Button onClick={zoom_out} width="250px" colorScheme="blue">
+                    静的ルーティング設定演習
+                  </Button>
+                  <Button onClick={zoom_out} width="250px" colorScheme="blue">
+                    VLAN演習
+                  </Button>
+                </VStack>
+              </PopoverBody>
+              <PopoverFooter>
+                {practiceContent}
+                <br></br>
+                <br></br>
+                <br></br>
+                <Button onClick={zoom_out} marginLeft="50%" colorScheme="green">
+                  演習の読み込み
+                </Button>
+              </PopoverFooter>
+            </PopoverContent>
+          </Portal>
+        </Popover>
+
+        {/*<Text fontSize="lg">{guideMessage}</Text>*/}
+      </HStack>
+
+      <Modal isOpen={isOpen}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalBody>
+            {!isLoadComplete && (
+              <CircularProgress isIndeterminate color="green.300" />
+            )}
+            {isLoadComplete && (
+              <CircularProgress value={100} color="green.300" />
+            )}
+            {loadStatus}
+          </ModalBody>
+          <ModalFooter></ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }

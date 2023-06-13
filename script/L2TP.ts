@@ -18,4 +18,15 @@ export class L2TP {
     this._selfTunnelID = _selfTunnelID;
     this._remoteTunnelID = _remoteTunnelID;
   }
+
+  public get sessionID() {
+    return this._sessionID;
+  }
+
+  public get selfTunnelID() {
+    return this._selfTunnelID;
+  }
+  public get remoteTunnelID() {
+    return this._remoteTunnelID;
+  }
 }

@@ -16,6 +16,10 @@ export class NWInterface {
   /** インタフェースの状態 */
   private _status!: string;
 
+  private _targetPodName!: string;
+
+  private _targetPodEth!: string;
+
   /** L2TP通信に必要な情報を格納 */
   private _L2TP: L2TP = null;
 
@@ -27,6 +31,22 @@ export class NWInterface {
 
   public get ethName() {
     return this._ethName;
+  }
+
+  public get targetPodName() {
+    return this._targetPodName;
+  }
+
+  public get targetPodEth() {
+    return this._targetPodEth;
+  }
+
+  public setTargetPodName(targetPodName: string) {
+    this._targetPodName = targetPodName;
+  }
+
+  public setTargetPodEth(targetPodEth: string) {
+    this._targetPodEth = targetPodEth;
   }
 
   public setL2TP(

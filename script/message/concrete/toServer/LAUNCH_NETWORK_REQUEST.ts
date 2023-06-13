@@ -1,6 +1,6 @@
 import { AbstractMessage } from "../../AbstractMessage";
 
-export class LAUNCH_NETWORK extends AbstractMessage {
+export class LAUNCH_NETWORK_REQUEST extends AbstractMessage {
   /**
    * ネットワークトポロジ
    */
@@ -8,7 +8,7 @@ export class LAUNCH_NETWORK extends AbstractMessage {
 
   public constructor() {
     super();
-    this.messageType = "LAUNCH_NETWORK";
+    this.messageType = "LAUNCH_NETWORK_REQUEST";
   }
 
   public set networkTopology(networkTopology: string) {
