@@ -31,6 +31,8 @@ import { PlusButton } from "../components/_testCode/PlusButton";
 import { MinusButton } from "../components/_testCode/MinusButton";
 import { DisplayState } from "@/components/mainPanel/networkCanvas/DisplayState";
 
+import { REMOVE_NETWORK_REQUEST } from "../script/message/concrete/toServer/REMOVE_NETWORK_REQUEST";
+
 const inter = Inter({ subsets: ["latin"] });
 
 //const ThemeContext = createContext(null);
@@ -43,6 +45,18 @@ export default function Home() {
   const [isConnected, setIsConnected] = useState(false);
   const [formMessage, setFormMessage] = useState("");
   const [sentMessage, setSentMessage] = useState("");
+
+  interface PodItem {
+    name: string;
+  }
+
+  interface Pod {
+    items: PodItem[];
+  }
+
+  interface Pods {
+    pod: Pod;
+  }
 
   //const { msg, changeMsg, operatingNode } = useContext(StateContext);
 
@@ -116,6 +130,35 @@ export default function Home() {
   }
 
   useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+
+      // ここにタブが閉じる前に実行したい処理を書きます
+      console.log("Reloaded");
+
+      //Nodeを生成するメッセージを作成してHandlerへ送る
+      let tmp_msg: REMOVE_NETWORK_REQUEST = new REMOVE_NETWORK_REQUEST();
+
+      const myPod: Pods = {
+        pod: {
+          items: [],
+        },
+      };
+
+      let node_list = GUIManager.guimanager.list_nodes;
+      for (let i = 0; i < node_list.length; i++) {
+        myPod.pod.items.push({
+          name: node_list[i].UUID,
+        });
+      }
+
+      console.log(myPod);
+      tmp_msg.networkTopology = JSON.stringify(myPod);
+      GUIManager.guimanager.eventHandle(tmp_msg);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
     // console.log(socket);
 
     GUIManager.guimanager.addSocket(
@@ -182,6 +225,11 @@ export default function Home() {
 
     socketRef.current = socket;
     console.log(socketRef.current);
+
+    // useEffectのクリーンアップ関数でイベントリスナーを削除します
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
   //const setNodeNameOnRightBar = (nodeName: string) =>{

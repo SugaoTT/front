@@ -1,5 +1,6 @@
 import { AbstractMessage } from "../AbstractMessage";
 import { LAUNCH_NETWORK_REQUEST } from "../concrete/toServer/LAUNCH_NETWORK_REQUEST";
+import { REMOVE_NETWORK_REQUEST } from "../concrete/toServer/REMOVE_NETWORK_REQUEST";
 import { L2TP_INFO_REQUEST } from "../concrete/toServer/L2TP_INFO_REQUEST";
 import { L2TP_TUNNEL_ID_REQUEST } from "../concrete/toServer/L2TP_TUNNEL_ID_REQUEST";
 
@@ -42,6 +43,19 @@ export class JSONCreator {
           "message-type": type,
         };
         jsonData = JSON.stringify(tmpJSON);
+        break;
+
+      case "REMOVE_NETWORK_REQUEST":
+        let removeNetwork_msg: REMOVE_NETWORK_REQUEST =
+          msg as REMOVE_NETWORK_REQUEST;
+        //入力コマンドをもとに送信コマンドを作成
+        tmpJSON = {
+          messageType: type,
+          networkTopology: removeNetwork_msg.networkTopology,
+        };
+        console.log(tmpJSON);
+        jsonData = JSON.stringify(tmpJSON);
+        console.log(jsonData);
         break;
     }
     return jsonData;
