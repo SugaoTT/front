@@ -32,6 +32,7 @@ import { MinusButton } from "../components/_testCode/MinusButton";
 import { DisplayState } from "@/components/mainPanel/networkCanvas/DisplayState";
 
 import { REMOVE_NETWORK_REQUEST } from "../script/message/concrete/toServer/REMOVE_NETWORK_REQUEST";
+import { JSONAnalyzer } from "@/script/message/json/JSONAnalyzer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -45,6 +46,8 @@ export default function Home() {
   const [isConnected, setIsConnected] = useState(false);
   const [formMessage, setFormMessage] = useState("");
   const [sentMessage, setSentMessage] = useState("");
+
+  const { LoadingStatus, changeLoadingStatus } = useContext(StateContext);
 
   interface PodItem {
     name: string;
@@ -178,8 +181,19 @@ export default function Home() {
     socket.onmessage = function (event) {
       if (isJsonString(event.data)) {
         const jsonObject = JSON.parse(event.data);
-        // JSONデータを処理するロジックをここに記述します
 
+        //LAUNCH_NETWORK_SUCCESSの時だけ例外的に処理をする;
+        let msg = JSONAnalyzer.analyze(event.data);
+        if (msg.messageType == "LAUNCH_NETWORK_SUCCESS") {
+          //contextに値を設定
+          changeLoadingStatus("COMPLETE");
+          console.log(
+            "LAUNCH_NETWORK_SUCCESSメッセージを受け取ったのでLoadingStatusの値を書き換えました．",
+            LoadingStatus
+          );
+        }
+
+        // JSONデータを処理するロジックをここに記述します
         GUIManager.guimanager.handler.receiveJSON(event.data);
         //console.log(jsonObject); // パースされたJSONオブジェクト
       }
@@ -270,7 +284,7 @@ export default function Home() {
   };
 
   return (
-    <StateProvider>
+    <>
       <Head>
         <title>TEST</title>
       </Head>
@@ -325,7 +339,7 @@ export default function Home() {
           </Box>
         </GridItem>
       </Grid>
-    </StateProvider>
+    </>
   );
 }
 

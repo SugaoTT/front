@@ -48,15 +48,15 @@ export class Handler {
 
   private methodOfLAUNCH_NETWORK_SUCCESS(msg: LAUNCH_NETWORK_SUCCESS) {
     //useContext使えばモーダル消せそう
-    const {
-      changeConnectMode,
-      connectMode,
-      changeConnectStatus,
-      connectStatus,
-      changeOperatingNode,
-    } = useContext(StateContext);
+    // const {
+    //   changeConnectMode,
+    //   connectMode,
+    //   changeConnectStatus,
+    //   connectStatus,
+    //   changeOperatingNode,
+    // } = useContext(StateContext);
 
-    console.log("clickedNode", connectMode);
+    // console.log("clickedNode", connectMode);
 
     //GUIManagerじゃなくてuseContextで実装しよう
     GUIManager.guimanager.tmpCreatedNodeNum++;

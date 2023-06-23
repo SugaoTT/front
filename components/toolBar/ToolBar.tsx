@@ -50,10 +50,17 @@ import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
 
 import { LAUNCH_NETWORK_REQUEST } from "../../script/message/concrete/toServer/LAUNCH_NETWORK_REQUEST";
 import { GUIManager } from "@/script/GUIManager";
+import { useEffect } from "react";
 
 export default function ToolBar() {
-  const { changeConnectMode, connectMode, changeConnectStatus, connectStatus } =
-    useContext(StateContext);
+  const {
+    changeConnectMode,
+    connectMode,
+    changeConnectStatus,
+    connectStatus,
+    LoadingStatus,
+    changeLoadingStatus,
+  } = useContext(StateContext);
 
   let [practiceContent, setContent] = useState("演習を選択して下さい");
 
@@ -96,6 +103,11 @@ export default function ToolBar() {
     interface: Interface;
   }
 
+  // Pod をリスト化したインターフェース
+  interface Pods {
+    podList: Pod[];
+  }
+
   const open_in_new = () => {
     console.log("clicked open_in_new button!");
   };
@@ -118,10 +130,12 @@ export default function ToolBar() {
 
   const zoom_in = () => {
     console.log("clicked zoom_in button!");
+    changeLoadingStatus(false);
   };
 
   const zoom_out = () => {
     console.log("clicked zoom_out button!");
+    changeLoadingStatus(true);
   };
 
   const cable = () => {
@@ -152,6 +166,13 @@ export default function ToolBar() {
     GUIManager.guimanager.tmpNodeNum = node_list.length;
     console.log(GUIManager.guimanager.tmpNodeNum);
 
+    // 空のPodsの初期化
+    const myPods: Pods = {
+      podList: [],
+    };
+
+    //let tmpMyPod: Pod;
+
     for (let i = 0; i < node_list.length; i++) {
       console.log(`この配列の${i + 1}番目は${node_list[i].nodeName}です`);
 
@@ -173,26 +194,41 @@ export default function ToolBar() {
           "session-id": node_list[i].ethList[j].L2TP.sessionID,
         });
       }
-      console.log(myPod);
-      tmp_msg.networkTopology = JSON.stringify(myPod);
-      GUIManager.guimanager.eventHandle(tmp_msg);
+
+      // 完成したPodをPodsのリストに追加
+      myPods.podList.push(myPod);
     }
+    console.log(myPods);
+    tmp_msg.networkTopology = JSON.stringify(myPods);
+
+    console.log("サーバに送信するJSON: ", tmp_msg);
+    GUIManager.guimanager.eventHandle(tmp_msg);
 
     //tmp_msg.networkTopology = JSON.stringify(jsonData);
 
     //GUIManager.guimanager.eventHandle(tmp_msg);
     //GUIManager.guimanager.socket?.send(JSON.stringify(tmp_msg));
 
+    //読み込み中のモーダルウィンドウが表示される
+    console.log("ToolBar: LoadingStatus: ", LoadingStatus);
+    if (LoadingStatus == "NOT LOADING") {
+      changeLoadingStatus("LOADING");
+    }
+
+    // setTimeout(function () {
+    //   changeLoadingStatus(false);
+    // }, 5000);
+
     // 5秒待機する
     //@TODO: ここは秒数で指定するのではなく，起動しているかどうかをメッセージで管理すべき
-    setTimeout(function () {
-      setLoadStatus("　　読み込みが完了しました");
-    }, 5000);
-    setTimeout(function () {
-      changeLoadComplete();
-    }, 5000);
+    // setTimeout(function () {
+    //   setLoadStatus("　　読み込みが完了しました");
+    // }, 5000);
+    // setTimeout(function () {
+    //   changeLoadComplete();
+    // }, 5000);
 
-    setTimeout(onClose, 7000);
+    // setTimeout(onClose, 7000);
   };
 
   // const setStatus = () => {
@@ -218,6 +254,18 @@ export default function ToolBar() {
   const vlan = () => {
     console.log("vlan");
   };
+
+  useEffect(() => {
+    console.log("LoadStatusの状態変化: ", LoadingStatus);
+    if (LoadingStatus == "COMPLETE") {
+      setLoadStatus("　　読み込みが完了しました");
+      setTimeout(function () {
+        onClose();
+      }, 2000);
+    } else if (LoadingStatus == "LOADING") {
+      setLoadStatus("　　ネットワークトポロジの読み込み中です");
+    }
+  }, [LoadingStatus]);
 
   return (
     <>
@@ -352,11 +400,11 @@ export default function ToolBar() {
         <ModalContent>
           <ModalHeader></ModalHeader>
           <ModalBody>
-            {!isLoadComplete && (
+            {LoadingStatus == "LOADING" && (
               <CircularProgress isIndeterminate color="green.300" />
             )}
-            {isLoadComplete && (
-              <CircularProgress value={100} color="green.300" />
+            {LoadingStatus == "COMPLETE" && (
+              <CircularProgress value={100} color="blue.300" />
             )}
             {loadStatus}
           </ModalBody>

@@ -12,11 +12,17 @@ const StateContext = createContext({
   connectStatus: "",
   operatingNode: "",
   isConnected: false,
+  LoadingStatus: "",
+  //LoadingComplete: false,
+
   changeConnectMode: (connectMode: boolean) => {},
   changeConnectStatus: (connectStatus: string) => {},
   changeOperatingNode: (nodeName: string) => {},
 
   changeIsConnected: (bool: boolean) => {},
+
+  changeLoadingStatus: (status: string) => {},
+  // changeLoadingComplete: (bool: boolean) => {},
 });
 
 interface Props {
@@ -28,6 +34,8 @@ const StateProvider = ({ children }: Props): JSX.Element => {
   const [connectStatus, setConnectStatus] = useState("");
   const [operatingNode, setOperatingNode] = useState("");
   const [isConnected, setIsConnected] = useState(false);
+  const [LoadingStatus, setLoadingStatus] = useState("NOT LOADING");
+  //const [LoadingComplete, setLoadingComplete] = useState("");
 
   const changeConnectMode = useCallback((connectMode: boolean) => {
     setConnectMode(connectMode);
@@ -43,6 +51,14 @@ const StateProvider = ({ children }: Props): JSX.Element => {
     setIsConnected(bool);
   }, []);
 
+  const changeLoadingStatus = useCallback((status: string) => {
+    setLoadingStatus(status);
+  }, []);
+
+  // const changeLoadingComplete = useCallback((bool: boolean) => {
+  //   setLoadingComplete(bool);
+  // }, []);
+
   return (
     <StateContext.Provider
       value={{
@@ -55,6 +71,8 @@ const StateProvider = ({ children }: Props): JSX.Element => {
 
         isConnected,
         changeIsConnected,
+        LoadingStatus,
+        changeLoadingStatus,
       }}
     >
       {children}

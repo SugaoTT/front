@@ -1,5 +1,6 @@
 import { AbstractMessage } from "../AbstractMessage";
 import { L2TP_INFO } from "../concrete/fromServer/L2TP_INFO";
+import { LAUNCH_NETWORK_SUCCESS } from "../concrete/fromServer/LAUNCH_NETWORK_SUCCESS";
 
 export class JSONAnalyzer {
   public static analyze(str: string): AbstractMessage {
@@ -20,6 +21,10 @@ export class JSONAnalyzer {
         (msg as L2TP_INFO).dstEthName = jsonObject.dstEthName;
 
         console.log("JSONAnlyzer: L2TP_INFO");
+        break;
+      case "LAUNCH_NETWORK_SUCCESS":
+        msg = new LAUNCH_NETWORK_SUCCESS();
+        console.log("JSONAnlyzer: LAUNCH_NETWORK");
         break;
     }
     if (msg) {
