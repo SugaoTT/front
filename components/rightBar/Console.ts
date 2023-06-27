@@ -16,6 +16,9 @@ export class Console {
   //一時的に出力コマンドを貯めるバッファ
   private buffer: string = "";
 
+  private history: string[];
+  private historyIndex: number;
+
   //ESCAPEキーを示すKeyCode
   private ESCAPE = "\x1b[";
 
@@ -96,9 +99,14 @@ export class Console {
     this.operatingNode = operatingNode;
     //プロンプト名の設定
     this.prompt = operatingNode + "> ";
+
+    //historyの設定
+    this.history = [];
+    this.historyIndex = 0;
+
     //xtermを生成
     this.term = new Terminal({
-      fontSize: 14,
+      fontSize: 12,
       rows: 30,
       cursorBlink: true,
       cursorStyle: "bar",
@@ -124,6 +132,18 @@ export class Console {
 
     //入力コマンドに対してパースする条件を定義
     var printable: boolean = false;
+
+    var termRef = this.term;
+    // キーボードイベントのリスナを設定します
+    el.current!.addEventListener("keydown", async function (event) {
+      // Ctrl+V (Windows/Linux) または Cmd+V (Mac) が押されたかをチェックします
+      if ((event.ctrlKey || event.metaKey) && event.key === "v") {
+        // ブラウザのクリップボードAPIを使用してテキストを取得します
+        const text = await navigator.clipboard.readText();
+        // ペーストしたテキストを xterm に書き込みます
+        termRef.write(text);
+      }
+    });
 
     //入力キーに対応する処理の定義
     this.term.onKey((e: { key: string; domEvent: KeyboardEvent }) => {
@@ -152,8 +172,15 @@ export class Console {
       } else if (printable) {
         switch (e.domEvent.key) {
           case "Enter": //Enterキーが押下されたときの処理
+            //console.log("バッファーの中身", this.buffer);
             if (this.buffer !== "") {
               this.commandHandler(this.buffer);
+              this.history.push(this.buffer);
+              this.historyIndex = this.history.length;
+
+              console.log("history", this.history);
+              console.log("historyIndex", this.historyIndex);
+
               this.writeln("");
               this.buffer = "";
             } else {
@@ -165,6 +192,21 @@ export class Console {
             break;
           case "ArrowDown": //矢印キーの下が入力されたとき
             // TODO: 入力コマンドに対する履歴を出力したい
+
+            if (this.historyIndex < this.history.length - 1) {
+              this.historyIndex++;
+
+              console.log("history", this.history);
+              console.log("historyIndex", this.historyIndex);
+              this.buffer = this.history[this.historyIndex];
+              this.write(
+                "\x1b[2K\r" + this.prompt + this.history[this.historyIndex]
+              );
+            } else if (this.historyIndex == this.history.length - 1) {
+              this.buffer = "";
+              this.write("\x1b[2K\r" + this.prompt);
+            }
+
             break;
           case "ArrowLeft": //矢印キーの左が入力されたとき
             if (cursorX > this.prompt.length) {
@@ -178,6 +220,17 @@ export class Console {
             break;
           case "ArrowUp": //矢印キーの上が入力されたとき
             // TODO: 入力コマンドに対する履歴を出力したい
+            // console.log("history", this.history);
+            // console.log("historyIndex", this.historyIndex);
+            if (this.historyIndex > 0) {
+              this.historyIndex--;
+            }
+            console.log("history", this.history);
+            console.log("historyIndex", this.historyIndex);
+            this.buffer = this.history[this.historyIndex];
+            this.write(
+              "\x1b[2K\r" + this.prompt + this.history[this.historyIndex]
+            );
             break;
           default: //標準文字キーが入力されたとき
             if (cursorX >= this.prompt.length + this.buffer.length) {
