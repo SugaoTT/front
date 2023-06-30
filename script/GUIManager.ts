@@ -153,6 +153,18 @@ export class GUIManager {
     return null;
   }
 
+  /** ノード管理用リストからnodeNameに対応するノードオブジェクトを検索 */
+  public selectedByNodeName(nodeName: string): AbstractNode | null {
+    let node: AbstractNode;
+    for (let i: number = 0; i < this._list_nodes.length; i++) {
+      node = this._list_nodes[i];
+      if (nodeName == node.nodeName) {
+        return node;
+      }
+    }
+    return null;
+  }
+
   public getUUIDByNodeName(nodeName: string): string | null {
     let node: AbstractNode;
     for (let i: number = 0; i < this._list_nodes.length; i++) {

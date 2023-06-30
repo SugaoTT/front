@@ -133,15 +133,25 @@ export class Console {
     //入力コマンドに対してパースする条件を定義
     var printable: boolean = false;
 
-    var termRef = this.term;
+    //var termRef = this.term;
+    // var bufferRef = this.buffer;
     // キーボードイベントのリスナを設定します
-    el.current!.addEventListener("keydown", async function (event) {
-      // Ctrl+V (Windows/Linux) または Cmd+V (Mac) が押されたかをチェックします
+    // el.current!.addEventListener("keydown", async function (event) {
+    //   // Ctrl+V (Windows/Linux) または Cmd+V (Mac) が押されたかをチェックします
+    //   if ((event.ctrlKey || event.metaKey) && event.key === "v") {
+    //     // ブラウザのクリップボードAPIを使用してテキストを取得します
+    //     const text = await navigator.clipboard.readText();
+    //     // ペーストしたテキストを xterm に書き込みます
+    //     //bufferRef = text;
+    //     termRef.write(text);
+    //   }
+    // });
+
+    el.current!.addEventListener("keydown", async (event) => {
       if ((event.ctrlKey || event.metaKey) && event.key === "v") {
-        // ブラウザのクリップボードAPIを使用してテキストを取得します
         const text = await navigator.clipboard.readText();
-        // ペーストしたテキストを xterm に書き込みます
-        termRef.write(text);
+        this.buffer += text;
+        this.term.write(text);
       }
     });
 
@@ -232,6 +242,9 @@ export class Console {
               "\x1b[2K\r" + this.prompt + this.history[this.historyIndex]
             );
             break;
+          // case "?":
+          //   console.log("?");
+          //   break;
           default: //標準文字キーが入力されたとき
             if (cursorX >= this.prompt.length + this.buffer.length) {
               this.write(e.key);
