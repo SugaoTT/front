@@ -97,6 +97,7 @@ export default function RightBar() {
         </Box>
         <Box w="100%">{isMemoVisiable && <Memo></Memo>}</Box>
       </VStack>
+      <Box mb="10"></Box>
     </>
   );
 }

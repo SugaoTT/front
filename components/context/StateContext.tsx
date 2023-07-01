@@ -14,6 +14,7 @@ const StateContext = createContext({
   isConnected: false,
   LoadingStatus: "",
   //LoadingComplete: false,
+  memoContent: "",
 
   changeConnectMode: (connectMode: boolean) => {},
   changeConnectStatus: (connectStatus: string) => {},
@@ -23,6 +24,7 @@ const StateContext = createContext({
 
   changeLoadingStatus: (status: string) => {},
   // changeLoadingComplete: (bool: boolean) => {},
+  changeMemoContent: (content: string) => {},
 });
 
 interface Props {
@@ -36,6 +38,7 @@ const StateProvider = ({ children }: Props): JSX.Element => {
   const [isConnected, setIsConnected] = useState(false);
   const [LoadingStatus, setLoadingStatus] = useState("NOT LOADING");
   //const [LoadingComplete, setLoadingComplete] = useState("");
+  const [memoContent, setMemoContent] = useState("");
 
   const changeConnectMode = useCallback((connectMode: boolean) => {
     setConnectMode(connectMode);
@@ -53,6 +56,10 @@ const StateProvider = ({ children }: Props): JSX.Element => {
 
   const changeLoadingStatus = useCallback((status: string) => {
     setLoadingStatus(status);
+  }, []);
+
+  const changeMemoContent = useCallback((content: string) => {
+    setMemoContent(content);
   }, []);
 
   // const changeLoadingComplete = useCallback((bool: boolean) => {
@@ -73,6 +80,9 @@ const StateProvider = ({ children }: Props): JSX.Element => {
         changeIsConnected,
         LoadingStatus,
         changeLoadingStatus,
+
+        memoContent,
+        changeMemoContent,
       }}
     >
       {children}

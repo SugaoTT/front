@@ -35,7 +35,7 @@ export default function IPSetting() {
   };
 
   const node = GUIManager.guimanager.selectedByNodeName(operatingNode);
-  //const list = a?.ethList.
+  //const list = a?.ethList;
 
   const ethList = node?.ethList;
   let tmpList = [];

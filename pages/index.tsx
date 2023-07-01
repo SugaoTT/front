@@ -165,7 +165,7 @@ export default function Home() {
     // console.log(socket);
 
     GUIManager.guimanager.addSocket(
-      new WebSocket("ws://localhost:8080/socket")
+      new WebSocket("ws://localhost:8088/socket")
     );
     //console.log(GUIManager.guimanager.socket);
 
@@ -310,9 +310,11 @@ export default function Home() {
         templateAreas={`"header header header"
                       "tool-bar tool-bar tool-bar"
                        "left-bar main right-bar"`}
+        //gridTemplateRows={"100px 40px 1fr"}
         gridTemplateRows={"100px 40px 1fr"}
+        height="100vh"
         gridTemplateColumns={"150px 1fr 550px"}
-        h="1080px"
+        // h="1080px"
         gap="1"
         color="blackAlpha.700"
         fontWeight="bold"
@@ -328,7 +330,13 @@ export default function Home() {
             <LeftBar></LeftBar>
           </Box>
         </GridItem>
-        <GridItem pl="2" bg="gray.100" border="1px" area={"right-bar"}>
+        <GridItem
+          pl="2"
+          bg="gray.100"
+          border="1px"
+          area={"right-bar"}
+          overflow="auto"
+        >
           <Box marginTop="5%">
             <RightBar></RightBar>
           </Box>

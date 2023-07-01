@@ -13,7 +13,7 @@ export default function WebSocketCreater() {
   };
 
   useEffect(() => {
-    socketRef.current = new WebSocket("ws://localhost:8080/socket");
+    socketRef.current = new WebSocket("ws://localhost:8088/socket");
     socketRef.current.onopen = function () {
       setIsConnected(true);
       console.log("Connected");

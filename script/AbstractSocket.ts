@@ -1,6 +1,6 @@
 export class AbstractSocket {
   private _socket: WebSocket;
-  private static _address: string = "ws://localhost:8080/socket";
+  private static _address: string = "ws://localhost:8088/socket";
 
   public constructor() {
     this._socket = new WebSocket(AbstractSocket._address);
