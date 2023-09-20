@@ -47,7 +47,8 @@ export default function Home() {
   const [formMessage, setFormMessage] = useState("");
   const [sentMessage, setSentMessage] = useState("");
 
-  const { LoadingStatus, changeLoadingStatus } = useContext(StateContext);
+  const { LoadingStatus, changeLoadingStatus, operatingNode } =
+    useContext(StateContext);
 
   interface PodItem {
     name: string;
@@ -191,6 +192,7 @@ export default function Home() {
             "LAUNCH_NETWORK_SUCCESSメッセージを受け取ったのでLoadingStatusの値を書き換えました．",
             LoadingStatus
           );
+          return;
         }
 
         // JSONデータを処理するロジックをここに記述します
@@ -215,8 +217,12 @@ export default function Home() {
           console.log(value);
 
           if (value == "EXEC COMPLETE") {
+            //コンソールログに保存
+            currentConsole.saveConsoleLog(false, "");
             currentConsole.writePrompt();
           } else {
+            //コンソールログに保存
+            currentConsole.saveConsoleLog(false, value);
             currentConsole.writeln(value);
           }
 

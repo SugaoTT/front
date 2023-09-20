@@ -6,6 +6,12 @@ export const OpenInNew = createIcon({
   d: "M180 936q-24 0-42-18t-18-42V276q0-24 18-42t42-18h279v60H180v600h600V597h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60V319L382 717Z",
 });
 
+export const FolderOpen = createIcon({
+  displayName: "FolderOpen",
+  viewBox: "0 -960 960 960",
+  d: "M140-160q-23 0-41.5-18.5T80-220v-520q0-23 18.5-41.5T140-800h281l60 60h339q23 0 41.5 18.5T880-680H455l-60-60H140v520l102-400h698L833-206q-6 24-22 35t-41 11H140Zm63-60h572l84-340H287l-84 340Zm0 0 84-340-84 340Zm-63-460v-60 60Z",
+});
+
 export const ArrowBack = createIcon({
   displayName: "ArrowBack",
   viewBox: "0 96 960 960",

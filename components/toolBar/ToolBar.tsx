@@ -33,6 +33,7 @@ import {
   Cable,
   RocketLaunch,
   School,
+  FolderOpen,
 } from "./Icons";
 import {
   Popover,
@@ -110,6 +111,10 @@ export default function ToolBar() {
 
   const open_in_new = () => {
     console.log("clicked open_in_new button!");
+  };
+
+  const folder_open = () => {
+    console.log("clicked folder_open button!");
   };
 
   const save = () => {
@@ -243,7 +248,7 @@ export default function ToolBar() {
   const ip = () => {
     console.log("ip");
     let content =
-      "ネットワーク機器にIPアドレスを設定して機器間を通信させよう．　　　　　　使用機器: ルータ1台，ホスト2台";
+      "ネットワーク機器にIPアドレスを設定して機器間を通信させよう．　　　　　　使用機器: ルータ1台，ホスト2台　　　　　ルータ1 IP Address: 192.168.0.1/24(net1), 192.168.1.1/24(net2)　　　　　　　　　　　　ホスト1 IP Address: 192.168.0.2　　　　　ホスト2 IP Address: 192.168.1.2";
     setPracticeContent(content);
   };
 
@@ -276,6 +281,14 @@ export default function ToolBar() {
           h="35px"
           aria-label="open in new"
           icon={<OpenInNew w="35px" h="35px" />}
+        />
+
+        <IconButton
+          onClick={folder_open}
+          w="35px"
+          h="35px"
+          aria-label="folder open"
+          icon={<FolderOpen w="35px" h="35px" />}
         />
 
         <IconButton

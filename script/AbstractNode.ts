@@ -14,7 +14,7 @@ export class AbstractNode {
   private _nodeType!: string;
 
   /** コンソールログを格納 */
-  private _consoleLog!: string;
+  private _consoleLog: Array<string> = new Array();
 
   /** メモの内容を格納 */
   private _memoContent!: string;
@@ -104,5 +104,13 @@ export class AbstractNode {
   public getNextEthName(): string {
     let interfaceNum = this._list_eth.length + 1;
     return "net" + interfaceNum;
+  }
+
+  public get consoleLog(): Array<string> {
+    return this._consoleLog;
+  }
+
+  public set consoleLog(consoleLog: Array<string>) {
+    this._consoleLog = consoleLog;
   }
 }

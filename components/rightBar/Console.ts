@@ -6,13 +6,13 @@ import { GUIManager } from "@/script/GUIManager";
 
 export class Console {
   //現在操作中のノード名
-  private operatingNode = "";
+  public operatingNode = "";
   //xtermの部品達
   public term!: Terminal;
   public fitAddon!: FitAddon;
 
-  //プロンプトの宣言
-  private prompt: string;
+  //プロンプトの宣言 //@TODO privateに
+  public prompt: string;
   //一時的に出力コマンドを貯めるバッファ
   private buffer: string = "";
 
@@ -93,6 +93,22 @@ export class Console {
     GUIManager.guimanager.socket?.send(JSON.stringify(jsonData));
   };
 
+  //ログを保存
+  public saveConsoleLog = (hasPrompt: bool, command: string) => {
+    //コンソールログに保存
+    if (this.operatingNode) {
+      if (hasPrompt) {
+        GUIManager.guimanager
+          .selectedByNodeName(this.operatingNode)
+          .consoleLog.push(this.prompt + command);
+      } else {
+        GUIManager.guimanager
+          .selectedByNodeName(this.operatingNode)
+          .consoleLog.push(command);
+      }
+    }
+  };
+
   //コンストラクタの定義
   constructor(operatingNode: string, el: any) {
     //現在操作中ノード名の設定
@@ -123,13 +139,26 @@ export class Console {
     this.term.open(el.current!);
     //初期画面の出力される文字列の設定
     this.term.writeln("Welcome to the terminal by xterm.js");
-    this.writePrompt();
+    //this.writePrompt();
     this.term.clear();
     this.fitAddon.fit();
 
     //GUIマネージャに現在操作中コンソールの登録
     GUIManager.guimanager.currentConsole = this;
 
+    //コンソールログを取得して出力
+
+    if (operatingNode) {
+      let consoleList =
+        GUIManager.guimanager.selectedByNodeName(operatingNode).consoleLog;
+      console.log(consoleList);
+      for (const item of consoleList) {
+        this.term.writeln(item);
+      }
+    }
+
+    //プロンプトを出力
+    this.writePrompt();
     //入力コマンドに対してパースする条件を定義
     var printable: boolean = false;
 
@@ -188,12 +217,17 @@ export class Console {
               this.history.push(this.buffer);
               this.historyIndex = this.history.length;
 
+              //コンソールログに保存
+              this.saveConsoleLog(true, this.buffer);
+
               console.log("history", this.history);
               console.log("historyIndex", this.historyIndex);
 
               this.writeln("");
               this.buffer = "";
             } else {
+              //コンソールログに保存
+              this.saveConsoleLog(true, "");
               this.writePrompt();
             }
             break;

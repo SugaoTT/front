@@ -26,6 +26,10 @@ export class JSONAnalyzer {
         msg = new LAUNCH_NETWORK_SUCCESS();
         console.log("JSONAnlyzer: LAUNCH_NETWORK");
         break;
+
+      case "console":
+        //msg = new
+        break;
     }
     if (msg) {
       // nullでないことを確認する
