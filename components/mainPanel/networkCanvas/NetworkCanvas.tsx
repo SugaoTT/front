@@ -77,6 +77,45 @@ export const NetworkCanvas = () => {
         position: { x: x_position, y: y_position },
         classes: "Host",
       });
+    } else if (nodeType == "Test") {
+      var node1 = GUIManager.guimanager.addNode(new AbstractNode("Router"));
+      var node2 = GUIManager.guimanager.addNode(new AbstractNode("Host"));
+      var node3 = GUIManager.guimanager.addNode(new AbstractNode("Host"));
+      cy.add({
+        data: { id: node1.nodeName },
+        position: { x: x_position, y: y_position - 100 },
+        classes: "Router",
+      });
+      cy.add({
+        data: { id: node2.nodeName },
+        position: { x: x_position - 150, y: y_position + 100 },
+        classes: "Host",
+      });
+      cy.add({
+        data: { id: node3.nodeName },
+        position: { x: x_position + 150, y: y_position + 100 },
+        classes: "Host",
+      });
+
+      cy.add({
+        data: {
+          id: "Test1",
+          source: "Router0",
+          target: "Host0",
+          sourceLabel: "net1",
+          targetLabel: "net1",
+        },
+      });
+
+      cy.add({
+        data: {
+          id: "Test2",
+          source: "Router0",
+          target: "Host1",
+          sourceLabel: "net2",
+          targetLabel: "net1",
+        },
+      });
     }
   };
   const onDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
